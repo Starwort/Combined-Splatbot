@@ -1,0 +1,8 @@
+Shooter | Sub | Special | Unlock Level | Cost | Damage | Ink Consumption | Special Points | Range | Damage | Fire Rate
+Blaster | Sub | Special | Unlock Level | Cost | Damage (min, max) | Ink Consumption | Special Points | Range | Impact | Fire Rate
+Roller | Sub | Special | Unlock Level | Cost | Damage (horizontal swing, vertical swing, roll) | Ink Consumption (splash) | Special Points | Range | Ink Speed | Handling
+Charger | Sub | Special | Unlock Level | Cost | Damage (partial charge, full charge) | Ink Consumption (no charge, full charge) | Special Points | Range | Charge Speed | Mobility
+Slosher | Sub | Special | Unlock Level | Cost | Damage | Ink Consumption | Special Points | Range | Damage | Handling
+Splatling | Sub | Special | Unlock Level | Cost | Damage | Ink Consumption (full charge) | Special Points | Range | Charge Speed | Mobility
+Dualies | Sub | Special | Unlock Level | Cost | Damage | Ink Consumption (shot, ([max roll chain]x) roll) | Special Points | Range | Damage | Mobility
+Brella | Sub | Special | Unlock Level | Cost | Damage (shot, contact) | Ink Consumption (shot, launch) | Special Points | Range | Damage | Durability
