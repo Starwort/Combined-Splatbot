@@ -4,18 +4,13 @@ from random import choice
 import datetime
 from requests import get  # to make GET request
 from ast import literal_eval
-import aiohttp
-import asyncio
-async def download(url, file_name):
-    async with aiohttp.ClientSession() as session:
-        async with session.get("url") as r:
-            data = await r.text()
-            with open(file_name, "wb") as file:
-                file.write(data)
+def download(url, file_name):
+    with open(file_name, "wb") as file:
+        file.write(get(url).content)
 class Map():
     def __init__(self,bot):
         self.bot = bot
-        asyncio.ensure_future( download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt"))
+        download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt")
         tmp = open("map_list.txt")
         self.list = [i.strip() for i in tmp.readlines()]
         tmp.close()
