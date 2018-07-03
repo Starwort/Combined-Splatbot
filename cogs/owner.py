@@ -69,9 +69,10 @@ class OwnerCog:
     @commands.is_owner()
     async def bot_unload(self, ctx):
         await self.bot.logout()
-    @commands.command(name="update")
+    @commands.command(name="update",hidden=True)
+    @commands.is_owner()
     async def bot_update(self, ctx):
-        await ctx.send("```"+run(["git", "pull", "https://gitlab.com/unidevs/spyke.git"], stdout=PIPE,encoding="ASCII").stdout+"```")
+        await ctx.send("```"+run(["git", "pull", "https://github.com/Starwort/Combined-Splatbot.git"], stdout=PIPE,encoding="ASCII").stdout+"```")
 
 def setup(bot):
     bot.add_cog(OwnerCog(bot))
