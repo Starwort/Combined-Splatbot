@@ -15,7 +15,7 @@ class Misc():
         self.mapfile.close()
     @commands.command(pass_context=True)
     async def scrims(self,ctx, noScrims: int):
-        """Generates N scrims; code originally produced for use in Spyke by Starwort#6129"""
+        """Generates N scrims; code originally produced for use in Spyke"""
         try:
             noScrims = int(noScrims)
             if noScrims > 50:
