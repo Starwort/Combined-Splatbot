@@ -107,7 +107,7 @@ class Help(formatter.HelpFormatter):
             if name in command.aliases:
                 # skip aliases
                 continue
-
+            new_short_doc = command.short_doc.replace('[p]', self.bot.command_prefix)
             if self.is_cog() or self.is_bot():
                 name = '{0}{1}'.format(self.bot.command_prefix, name)
 
