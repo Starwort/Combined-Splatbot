@@ -15,7 +15,7 @@ async def download(url, file_name):
 class Mode():
     def __init__(self,bot):
         self.bot = bot
-        await download("http://starbright.dyndns.org/starwort/mode_list.txt","mode_list.txt")
+        asyncio.ensure_future( download("http://starbright.dyndns.org/starwort/mode_list.txt","mode_list.txt"))
         tmp = open("mode_list.txt")
         self.list = [i.strip() for i in tmp.readlines()]
         tmp.close()
