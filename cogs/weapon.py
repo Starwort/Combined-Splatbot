@@ -15,7 +15,7 @@ async def download(url, file_name):
 class Weapon():
     def __init__(self,bot):
         self.bot = bot
-        await download("http://starbright.dyndns.org/starwort/weapon_list.txt","weapon_list.txt")
+        asyncio.ensure_future(download("http://starbright.dyndns.org/starwort/weapon_list.txt","weapon_list.txt"))
         tmp = open("weapon_list.txt")
         self.list = [i.strip() for i in tmp.readlines()]
         tmp.close()
