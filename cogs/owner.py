@@ -1,6 +1,6 @@
 from discord.ext import commands
 from discord import *
-from subprocess import run
+from subprocess import run, PIPE
 class OwnerCog:
 
     def __init__(self, bot):
