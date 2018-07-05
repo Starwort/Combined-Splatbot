@@ -3,7 +3,7 @@ from discord.ext import commands
 class RuleCog():
     def __init__(self,bot):
         self.bot = bot
-    @commands.command
+    @commands.command()
     async def hs(self,ctx):
         rules = """<:hs1:373194237837312000> **__Hide and seek__** <:hs1:373194237837312000>
 
