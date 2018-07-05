@@ -3,7 +3,7 @@ from discord.ext import commands
 class RuleCog():
     def __init__(self,bot):
         self.bot = bot
-    @commands.command()
+    @commands.command(aliases=['hideandseek','hide and seek','hideseek','h&s','hide&seek','hide & seek'])
     async def hs(self,ctx):
         rules = """<:hs1:373194237837312000> **__Hide and seek__** <:hs1:373194237837312000>
 
@@ -25,3 +25,6 @@ Hiding time deaths are excluded
 Any seeker that dies may continue
 Any hider that dies is out and may only return as a spectator"""
         await ctx.send(rules)
+
+def setup(bot):
+    bot.add_cog(RuleCog(bot))
