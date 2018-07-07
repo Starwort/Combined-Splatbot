@@ -100,6 +100,13 @@ class Misc():
         embed = Embed(description="If you need support or have a suggestion for the bot, click [here](https://discord.gg/3xuDR3G)", colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)))
         await ctx.send(embed=embed)
-
+    @commands.command(aliases=['credit'])
+    async def credits(self,ctx):
+        credits = f'''Original weapon, mode and map lists created by {self.bot.get_user(196685856466010112)} at my request (he was very helpful when making the three bots that preceded this one)
+Hide & Seek emoji created by MrSatnav [tag unknown], an ex-member of Ink2Death
+Sub and Special Weapon emoji from the Splatoon Wiki (<https://splatoonwiki.org>)
+All other emoji created by the talented {self.bot.get_user(366208016187523082)}
+Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py examples'''
+        await ctx.send(credits)
 def setup(bot):
     bot.add_cog(Misc(bot))
