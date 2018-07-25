@@ -122,6 +122,7 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
         add = ('removed' if newprefix.strip(' ') == '' else f'changed to {newprefix}') if ctx.guild.id in self.bot.additionalprefixdata else f'set to {newprefix}'
         outmsg = f'Your server\'s prefix has been {add}'
         self.bot.additionalprefixdata[ctx.guild.id] = newprefix
+        if newprefix == '': del self.bot.additionalprefixdata[ctx.guild.id]
         with open('prefixes.txt','w') as file:
             file.write(repr(self.bot.additionalprefixdata))
         await ctx.send(outmsg)
