@@ -113,10 +113,14 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
     async def setprefix(self,ctx,newprefix):
         '''Sets the guild prefix. Requires the Manage Server permission. To use spaces in your prefix quote it.
         You can even use a space at the end of the prefix.
+        
         Example 1 (no spaces):
         [p]setprefix splat!
         Example 2 (with trailing space):
-        [p]setprefix "splat "'''
+        [p]setprefix "splat "
+        
+        To remove your server's prefix:
+        [p]setprefix ""'''
         if len(newprefix) > 10:
             return await ctx.send('In order to prevent abuse to my disk, the prefix length has been capped at 10. Sorry!')
         add = ('removed' if newprefix.strip(' ') == '' else f'changed to `{newprefix}`') if ctx.guild.id in self.bot.additionalprefixdata else f'set to `{newprefix}`'
