@@ -23,7 +23,7 @@ properties.close()
 token = values[0].strip("\n")
 pre = values[1].strip("\n")
 with open('prefixes.txt') as file:
-    prefixes = literal_eval(file.read)
+    prefixes = literal_eval(file.read())
 def prefix(bot, ctx):
     global pre
     prefixes = bot.additionalprefixdata
