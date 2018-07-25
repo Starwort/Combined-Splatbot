@@ -25,7 +25,8 @@ pre = values[1].strip("\n")
 with open('prefixes.txt') as file:
     prefixes = literal_eval(file.read)
 def prefix(bot, ctx):
-    global pre, prefixes
+    global pre
+    prefixes = bot.additionalprefixdata
     if type(ctx) == commands.Context:
         ctx = ctx.message
     try:
