@@ -108,5 +108,22 @@ Sub and Special Weapon emoji from the Splatoon Wiki (<https://splatoonwiki.org>)
 All other emoji created by the talented {self.bot.get_user(366208016187523082)}
 Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py examples'''
         await ctx.send(credits)
+    @commands.command()
+    @commands.has_permissions(manage_guild=True)
+    async def setprefix(self,ctx,newprefix):
+        '''Sets the guild prefix. Requires the Manage Server permission. To use spaces in your prefix quote it.
+        You can even use a space at the end of the prefix.
+        Example 1 (no spaces):
+        [p]setprefix splat!
+        Example 2 (with trailing space):
+        [p]setprefix "splat "'''
+        if len(newprefix) > 10:
+            return await ctx.send('In order to prevent abuse to my disk, the prefix length has been capped at 10. Sorry!')
+        add = ('removed' if newprefix.strip(' ') == '' else f'changed to {newprefix}') if ctx.guild.id in self.bot.additionalprefixdata else f'set to {newprefix}'
+        outmsg = f'Your server\'s prefix has been {add}'
+        self.bot.additionalprefixdata[ctx.guild.id] = newprefix
+        with open('prefixes.txt','w') as file:
+            file.write(repr(self.bot.additionalprefixdata))
+        await ctx.send(outmsg)
 def setup(bot):
     bot.add_cog(Misc(bot))
