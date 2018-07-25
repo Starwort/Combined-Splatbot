@@ -111,7 +111,7 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def setprefix(self,ctx,newprefix):
-        '''Sets the guild prefix. Requires the Manage Server permission. To use spaces in your prefix quote it.
+        '''Sets the server's custom prefix (the original will still work). Requires the Manage Server permission. To use spaces in your prefix quote it.
         You can even use a space at the end of the prefix.
         
         Example 1 (no spaces):
@@ -122,9 +122,9 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
         To remove your server's prefix:
         [p]setprefix ""'''
         if len(newprefix) > 10:
-            return await ctx.send('In order to prevent abuse to my disk, the prefix length has been capped at 10. Sorry!')
+            return await ctx.send('In order to prevent abuse to my disk, the custom prefix length has been capped at 10. Sorry!')
         add = ('removed' if newprefix.strip(' ') == '' else f'changed to `{newprefix}`') if ctx.guild.id in self.bot.additionalprefixdata else f'set to `{newprefix}`'
-        outmsg = f'Your server\'s prefix has been {add}'
+        outmsg = f'Your server\'s custom prefix has been {add}'
         self.bot.additionalprefixdata[ctx.guild.id] = newprefix
         if newprefix == '': del self.bot.additionalprefixdata[ctx.guild.id]
         with open('prefixes.txt','w') as file:
