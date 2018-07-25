@@ -83,6 +83,7 @@ class OwnerCog:
         self.bot.additionalprefixdata[guild_id] = prefix
         with open('prefixes.txt','w') as file:
             file.write(repr(self.bot.additionalprefixdata))
-        await ctx.send(f'Set prefix for {(await self.bot.get_guild(guild_id)).name if await self.bot.get_guild(guild_id) else "[INVALID SERVER]"} to {prefix}')
+        guild = await self.bot.get_guild(guild_id)
+        await ctx.send(f'Set prefix for {guild.name if await guild else "[INVALID SERVER]"} to {prefix}')
 def setup(bot):
     bot.add_cog(OwnerCog(bot))
