@@ -150,7 +150,7 @@ class Help(formatter.HelpFormatter):
             if command.help:
                 name = '{0}'.format(command.help.split('\n\n')[0])
                 name_length = len(name)
-                name = name.replace('[p]', self.bot.command_prefix)
+                name = name.replace('[p]', self.bot.command_prefix(self.bot,self.context)[0])
                 value = command.help[name_length:].replace('[p]', self.bot.command_prefix(self.bot,self.context)[0])
                 if value == '':
                      name = '{0}'.format(command.help.split('\n')[0])
