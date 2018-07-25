@@ -38,6 +38,7 @@ def prefix(bot, ctx):
         prefix = [pre]
     return commands.when_mentioned_or(*prefix)(bot, ctx)
 bot = commands.Bot(command_prefix=prefix, description=description)
+bot.additionalprefixdata = prefixes
 @bot.event
 async def on_ready():
     print("Logged in as\n{0} ({1})\n--------------------".format(bot.user.name,bot.user.id))
