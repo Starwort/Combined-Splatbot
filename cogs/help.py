@@ -107,9 +107,9 @@ class Help(formatter.HelpFormatter):
             if name in command.aliases:
                 # skip aliases
                 continue
-            new_short_doc = command.short_doc.replace('[p]', self.bot.command_prefix)
+            new_short_doc = command.short_doc.replace('[p]', self.bot.command_prefix(self.bot,self.context)[0])
             if self.is_cog() or self.is_bot():
-                name = '{0}{1}'.format(self.bot.command_prefix, name)
+                name = '{0}{1}'.format(self.bot.command_prefix(self.bot,self.context)[0], name)
 
             if len(entries + '**{0}**  -  {1}\n'.format(name, new_short_doc)) > 1000:
                 list_entries.append(entries)
@@ -121,7 +121,7 @@ class Help(formatter.HelpFormatter):
     def get_ending_note(self):
         # command_name = self.context.invoked_with
         return "Type {0}help <command> for more info on a command.\n" \
-               "You can also type {0}help <category> for more info on a category.".format(self.bot.command_prefix)
+               "You can also type {0}help <category> for more info on a category.".format(self.bot.command_prefix(self.bot,self.context)[0])
 
     async def format(self, ctx, command):
         """Formats command for output.
@@ -151,11 +151,11 @@ class Help(formatter.HelpFormatter):
                 name = '{0}'.format(command.help.split('\n\n')[0])
                 name_length = len(name)
                 name = name.replace('[p]', self.bot.command_prefix)
-                value = command.help[name_length:].replace('[p]', self.bot.command_prefix)
+                value = command.help[name_length:].replace('[p]', self.bot.command_prefix(self.bot,self.context)[0])
                 if value == '':
                      name = '{0}'.format(command.help.split('\n')[0])
                      name_length = len(name)
-                     value = command.help[name_length:].replace('[p]', self.bot.command_prefix)
+                     value = command.help[name_length:].replace('[p]', self.bot.command_prefix(self.bot,self.context)[0])
                 if value == '':
                     value = empty
                 if len(value) > 1024:
