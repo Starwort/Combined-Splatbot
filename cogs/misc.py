@@ -119,7 +119,7 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
         [p]setprefix "splat "'''
         if len(newprefix) > 10:
             return await ctx.send('In order to prevent abuse to my disk, the prefix length has been capped at 10. Sorry!')
-        add = ('removed' if newprefix.strip(' ') == '' else f'changed to {newprefix}') if ctx.guild.id in self.bot.additionalprefixdata else f'set to {newprefix}'
+        add = ('removed' if newprefix.strip(' ') == '' else f'changed to `{newprefix}`') if ctx.guild.id in self.bot.additionalprefixdata else f'set to `{newprefix}`'
         outmsg = f'Your server\'s prefix has been {add}'
         self.bot.additionalprefixdata[ctx.guild.id] = newprefix
         if newprefix == '': del self.bot.additionalprefixdata[ctx.guild.id]
