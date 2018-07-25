@@ -4,7 +4,7 @@ import time
 from os import listdir
 from os.path import isfile, join
 from requests import get  # to make GET request
-
+from ast import literal_eval
 def download(url, file_name):
     # open in binary mode
     with open(file_name, "wb") as file:
@@ -21,7 +21,22 @@ properties = open("randomiser.properties")
 values = properties.readlines()
 properties.close()
 token = values[0].strip("\n")
-prefix = values[1].strip("\n")
+pre = values[1].strip("\n")
+with open('prefixes.txt') as file:
+    prefixes = literal_eval(file.read)
+def prefix(bot, ctx):
+    global pre, prefixes
+    if type(ctx) == commands.Context:
+        ctx = ctx.message
+    try:
+        extraprefix = prefixes[ctx.guild.id]
+    except KeyError:
+        extraprefix = None
+    if extraprefix:
+        prefix = [extraprefix, pre]
+    else:
+        prefix = [pre]
+    return commands.when_mentioned_or(*prefix)(bot, ctx)
 bot = commands.Bot(command_prefix=prefix, description=description)
 @bot.event
 async def on_ready():
