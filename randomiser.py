@@ -45,13 +45,13 @@ async def on_ready():
     print("Logged in as\n{0} ({1})\n--------------------".format(bot.user.name,bot.user.id))
     t = time.time()
     bot.startuptime = time.strftime("(UTC) %H:%M:%S on %d/%m/%Y", time.gmtime(t))
-    await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,prefix,len(bot.guilds))))
+    await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,pre,len(bot.guilds))))
 @bot.event
 async def on_guild_join(guild):
-    await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,prefix,len(bot.guilds))))
+    await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,pre,len(bot.guilds))))
 @bot.event
 async def on_guild_remove(guild):
-    await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,prefix,len(bot.guilds))))
+    await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,pre,len(bot.guilds))))
 if __name__ == '__main__':
     for extension in [f.replace('.py', '') for f in listdir(cogs_dir) if isfile(join(cogs_dir, f))]:
         try:
