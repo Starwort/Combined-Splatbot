@@ -9,8 +9,6 @@ import os
 class WeaponInfo():
     def __init__(self,bot):
         self.client = aiohttp.ClientSession()
-        with open(name,'wb') as file:
-            file.write(content)
         self.bot = bot
         with open("weapon_info.txt") as tmp:
             self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
@@ -26,6 +24,8 @@ class WeaponInfo():
         return await response.read()
     async def download(self,url, name):
         content = await get(url)
+        with open(name,'wb') as file:
+            file.write(content)
     @commands.command(hidden=True)
     @commands.is_owner()
     async def updatelists(self,ctx):
