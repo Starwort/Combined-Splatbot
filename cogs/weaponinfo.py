@@ -48,11 +48,7 @@ class WeaponInfo():
     @commands.command(pass_context=True,aliases=["info", "winfo"])
     async def weaponinfo(self,ctx,*,weapon):
         '''
-        This command gets you weapon info. Starwort wrote this.
-
-        Example:
-
-        !!winfo Splat Roller
+        This command gets you weapon info.
         '''
         match = process.extractOne(weapon,self.matchlist)
         if match[1] < 75:
