@@ -3,32 +3,32 @@ from discord.ext import commands
 from random import choice
 import datetime
 from fuzzywuzzy import process
-import asyncio, aiohttp
+import asyncio, aiohttp, aiofiles
 import sys
 import os
-async def get(*args, **kwargs):
-    response = await aiohttp.request('GET', *args, **kwargs)
-    return await response.read_and_close()
-async def download(url, name):
-    content = await get(url)
-    with open(name,'wb') as file:
-        file.write(content)
+from cogs.lib import checks
 class WeaponInfo():
     def __init__(self,bot):
+        self.client = aiohttp.ClientSession()
+        with open(name,'wb') as file:
+            file.write(content)
         self.bot = bot
-        tmp = open("weapon_info.txt")
-        self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
-        tmp.close()
-        tmp = open("prototypes.txt")
-        self.prototypes = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
-        tmp.close()
+        with open("weapon_info.txt") as tmp:
+            self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
+        with open("prototypes.txt") as tmp:
+            self.prototypes = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
         self.matchlist = [i[0] for i in self.list]
-        print( self.matchlist, self.prototypes, self.list)
         self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
         self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
-        print('Init complete. Resuming normal execution')
+    def __unload(self):
+        await self.client.close()
+    async def get(self,*args, **kwargs):
+        response = await self.client.request('GET', *args, **kwargs)
+        return await response.read()
+    async def download(self,url, name):
+        content = await get(url)
     @commands.command(hidden=True)
-    @commands.is_owner()
+    @checks._check()
     async def updatelists(self,ctx):
         await ctx.send('Updating `weapon_info.txt`...')
         await download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
@@ -36,13 +36,11 @@ class WeaponInfo():
         await download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
         await ctx.send('Done!\nResetting the internal list cache...')
         await ctx.send('`weapon_info.txt`...')
-        tmp = open("weapon_info.txt")
-        self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
-        tmp.close()
+        async with aiofiles.open("weapon_info.txt") as tmp:
+            self.list = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
         await ctx.send('Done!\n`prototypes.txt`...')
-        tmp = open("prototypes.txt")
-        self.prototypes = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
-        tmp.close()
+        async with aiofiles.open("prototypes.txt") as tmp:
+            self.prototypes = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
         await ctx.send('Done!\nSetting inherited variables...')
         self.matchlist = [i[0] for i in self.list]
         self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
