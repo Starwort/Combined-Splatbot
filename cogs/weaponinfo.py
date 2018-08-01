@@ -23,9 +23,9 @@ class WeaponInfo():
         response = await self.client.request('GET', *args, **kwargs)
         return await response.read()
     async def download(self,url, name):
-        content = await get(url)
-        with open(name,'wb') as file:
-            file.write(content)
+        content = await self.get(url)
+        async with aiofiles.open(name,'wb') as file:
+            await file.write(content)
     @commands.command(hidden=True)
     @commands.is_owner()
     async def updatelists(self,ctx):
