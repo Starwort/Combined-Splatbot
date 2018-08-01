@@ -10,8 +10,8 @@ def download(url, file_name):
 class WeaponInfo():
     def __init__(self,bot):
         self.bot = bot
-        self.bot.loop.run_in_executor(None,download,"http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
-        self.bot.loop.run_in_executor(None,download,"http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
+        download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
+        download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
         tmp = open("weapon_info.txt")
         self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
         tmp.close()
