@@ -2,16 +2,20 @@ from discord import *
 from discord.ext import commands
 from random import choice
 import datetime
-from requests import get
 from fuzzywuzzy import process
-def download(url, file_name):
-    with open(file_name, "wb") as file:
-        file.write(get(url).content)
+import asyncio, aiohttp
+import sys
+import os
+async def get(*args, **kwargs):
+    response = await aiohttp.request('GET', *args, **kwargs)
+    return await response.read_and_close()
+async def download(url, name):
+    content = await get(url)
+    with open(name,'wb') as file:
+        file.write(content)
 class WeaponInfo():
     def __init__(self,bot):
         self.bot = bot
-        download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
-        download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
         tmp = open("weapon_info.txt")
         self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
         tmp.close()
@@ -19,10 +23,40 @@ class WeaponInfo():
         self.prototypes = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
         tmp.close()
         self.matchlist = [i[0] for i in self.list]
+        print( self.matchlist, self.prototypes, self.list)
         self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
         self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
+        print('Init complete. Resuming normal execution')
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def updatelists(self,ctx):
+        await ctx.send('Updating `weapon_info.txt`...')
+        await download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
+        await ctx.send('Done!\nUpdating `prototypes.txt`...')
+        await download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
+        await ctx.send('Done!\nResetting the internal list cache...')
+        await ctx.send('`weapon_info.txt`...')
+        tmp = open("weapon_info.txt")
+        self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
+        tmp.close()
+        await ctx.send('Done!\n`prototypes.txt`...')
+        tmp = open("prototypes.txt")
+        self.prototypes = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
+        tmp.close()
+        await ctx.send('Done!\nSetting inherited variables...')
+        self.matchlist = [i[0] for i in self.list]
+        self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
+        self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
+        await ctx.send('Done!')
     @commands.command(pass_context=True,aliases=["info", "winfo"])
     async def weaponinfo(self,ctx,*,weapon):
+        '''
+        This command gets you weapon info. Starwort wrote this.
+
+        Example:
+
+        !!winfo Splat Roller
+        '''
         match = process.extractOne(weapon,self.matchlist)
         if match[1] < 75:
             await ctx.send(f"That does not appear to be a weapon! The best match, {match[0]} was <75% ({match[1]}%)")
@@ -48,5 +82,6 @@ class WeaponInfo():
         embed.add_field(name=wproto[10], value=(round(int(wdata[10])/10))*u"\u2588" + (10 - (round(int(wdata[10])/10)))*u"\u2591" + f" ({wdata[10]}/100)", inline=True)
         embed.set_footer(text=f"Requested by {str(ctx.author)}")
         await ctx.send(embed=embed)
+        
 def setup(bot):
     bot.add_cog(WeaponInfo(bot))
