@@ -30,11 +30,11 @@ class WeaponInfo():
     @commands.is_owner()
     async def updatelists(self,ctx):
         await ctx.send('Updating `weapon_info.txt`...')
-        await download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
+        await self.download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
         await ctx.send('Done!\nUpdating `prototypes.txt`...')
-        await download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
-        await ctx.send('Done!\nResetting the internal list cache...')
-        await ctx.send('`weapon_info.txt`...')
+        await self.download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
+        await ctx.send('Done!')
+        await ctx.send('Resetting the internal list cache...\n`weapon_info.txt`...')
         async with aiofiles.open("weapon_info.txt") as tmp:
             self.list = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
         await ctx.send('Done!\n`prototypes.txt`...')
