@@ -6,7 +6,6 @@ from fuzzywuzzy import process
 import asyncio, aiohttp, aiofiles
 import sys
 import os
-from cogs.lib import checks
 class WeaponInfo():
     def __init__(self,bot):
         self.client = aiohttp.ClientSession()
@@ -21,14 +20,14 @@ class WeaponInfo():
         self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
         self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
     def __unload(self):
-        await self.client.close()
+        asyncio.get_event_loop().create_task(self.client.close())
     async def get(self,*args, **kwargs):
         response = await self.client.request('GET', *args, **kwargs)
         return await response.read()
     async def download(self,url, name):
         content = await get(url)
     @commands.command(hidden=True)
-    @checks._check()
+    @commands.is_owner()
     async def updatelists(self,ctx):
         await ctx.send('Updating `weapon_info.txt`...')
         await download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
