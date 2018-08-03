@@ -4,6 +4,7 @@ import datetime
 from random import choice
 from ast import literal_eval
 import pygal
+import aiofiles
 class Misc():
     def __init__(self,bot):
         self.bot = bot
@@ -121,14 +122,15 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
         
         To remove your server's prefix:
         [p]setprefix ""'''
+        newprefix = newprefix.lstrip(' ')
         if len(newprefix) > 10:
             return await ctx.send('In order to prevent abuse to my disk, the custom prefix length has been capped at 10. Sorry!')
-        add = ('removed' if newprefix.strip(' ') == '' else f'changed to `{newprefix}`') if ctx.guild.id in self.bot.additionalprefixdata else f'set to `{newprefix}`'
+        add = ('removed' if newprefix == '' else f'changed to `{newprefix}`') if ctx.guild.id in self.bot.additionalprefixdata else f'set to `{newprefix}`'
         outmsg = f'Your server\'s custom prefix has been {add}'
         self.bot.additionalprefixdata[ctx.guild.id] = newprefix
         if newprefix == '': del self.bot.additionalprefixdata[ctx.guild.id]
-        with open('prefixes.txt','w') as file:
-            file.write(repr(self.bot.additionalprefixdata))
+        async with aiofiles.open('prefixes.txt','w') as file:
+            await file.write(repr(self.bot.additionalprefixdata))
         await ctx.send(outmsg)
 def setup(bot):
     bot.add_cog(Misc(bot))
