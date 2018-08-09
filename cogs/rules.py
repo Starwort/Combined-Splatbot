@@ -5,6 +5,7 @@ class RuleCog():
         self.bot = bot
     @commands.command(aliases=['hideandseek','hideseek','h&s','hide&seek'])
     async def hs(self,ctx):
+        '''Lists the rules of Hide and Seek'''
         rules = """<:hs1:373194237837312000> **__Hide and seek__** <:hs1:373194237837312000>
 
 GAME SETUP:
@@ -32,6 +33,7 @@ Hiding time deaths are excluded"""
         await ctx.send(rules)
     @commands.command(aliases=['lasertag','lazertag'])
     async def lt(self, ctx):
+        '''Lists the rules of Laser Tag'''
         rules = '''<:lt:464854837549334540> **__Laser Tag__** <:lt:464854837549334540>
 
 GAME SETUP:
@@ -54,6 +56,25 @@ For even teams the team's score is simply the total of each player's score
 For uneven teams the team's score is the total of each player's score divided by the number of players on the team
 The team or, if agreed upon before the game, player with the most points wins'''
         await ctx.send(rules)
+    @commands.command(aliases=['tacticalturfwar','tw'])
+    async def ttw(self, ctx):
+        '''Lists the rules of Tactical Turf War'''
+        rules = '''<:ttw:477223858148081664> **__Tactical Turf War__** <:ttw:477223858148081664>
 
+GAME SETUP:
+Turf War, any map (players agree or randomised)
+
+TEAM SETUP:
+Any number of players from 2 to 8, balanced teams.
+
+HOW TO PLAY:
+The game is played just like a normal turf war, with splatting, inking turf, and no restrictions on player movement and spawn times.
+HOWEVER
+Each player must ink 590p of turf BUT ALSO must NOT ink more than 600p.
+
+WHO WINS:
+If any player failed to meet 590p or exceeded 600p, their team loses. If both teams had a player who did not meet the conditions, then *everyone* loses.
+If neither team had players outside of the range, then the winner is the winner of the normal Turf War.'''
+        await ctx.send(rules)
 def setup(bot):
     bot.add_cog(RuleCog(bot))
