@@ -42,7 +42,7 @@ def prefix(bot, ctx):
     else:
         prefix = [pre]
     newpre = commands.when_mentioned_or(*prefix)(bot, ctx)
-    print(repr(newpre))
+    #print(repr(newpre))
     return newpre
 bot = commands.Bot(command_prefix=prefix, description=description)
 bot.additionalprefixdata = prefixes
