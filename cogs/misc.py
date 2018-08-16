@@ -102,4 +102,4 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
             await file.write(repr(self.bot.additionalprefixdata))
         await ctx.send(outmsg)
 def setup(bot):
-    bot.add_cog(Misc(bot))
+    bot.add_cog(Miscellaneous(bot))
