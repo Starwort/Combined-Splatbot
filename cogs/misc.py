@@ -5,46 +5,9 @@ from random import choice
 from ast import literal_eval
 import pygal
 import aiofiles
-class Misc():
+class Miscellaneous():
     def __init__(self,bot):
         self.bot = bot
-        self.modefile = open("mode_list.txt")
-        self.modes = self.modefile.read().split("\n")
-        self.modefile.close()
-        self.mapfile = open("map_list.txt")
-        self.maps = self.mapfile.read().split("\n")
-        self.mapfile.close()
-    @commands.command(pass_context=True)
-    async def scrims(self,ctx, noScrims: int):
-        """Generates N scrims; code originally produced for use in Spyke"""
-        try:
-            noScrims = int(noScrims)
-            if noScrims > 50:
-                raise Exception
-        except:
-            await ctx.send(content="The number of scrims must be whole and less than or equal to 50!")
-            return
-        scrims = []
-        minus1map = None
-        minus2map = None
-        minus1mode = None
-        minus2mode = None
-        for i in range(noScrims):
-            map = None
-            while map in [None, minus1map, minus2map]:
-                map = choice(self.maps)
-            mode = None
-            while mode in [None, self.modes[0], minus1mode, minus2mode]:
-                mode = choice(self.modes)
-            scrims.append([map,mode])
-            minus2map = minus1map
-            minus1map = map
-            minus2mode = minus1mode
-            minus1mode = mode
-        out = "\n"
-        for i in range(noScrims):
-            out += f'Game #{i+1}: {" ".join(scrims[i][1].split(" ")[slice(len(scrims[i][1].split(" "))-1)])} on {" ".join(scrims[i][0].split(" ")[slice(len(scrims[i][0].split(" "))-1)])}\n'
-        await ctx.send(content=out.strip())
     @commands.group(pass_context=True)
     async def outcomes(self,ctx):
         """Provides a pie chart of the all-time outcomes of a command"""
@@ -85,25 +48,31 @@ class Misc():
         await ctx.send(file=File("weapons.png"))
     @commands.command(pass_context=True)
     async def ping(self,ctx):
+        '''Display the bot's ping time'''
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
         embed = Embed(description=f"Ping time: {round(self.bot.latency * 1000,3)}ms", colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
-        embed.set_author(name="Pong!", icon_url="https://cdn.discordapp.com/avatars/424540163579052043/b67d194871881f83a7e67f3ed35a02ea.png?size=1024")
+        embed.set_author(name="Pong!", icon_url=ctx.me.avatar_url)
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)), icon_url=avatar)
         await ctx.send(embed=embed)
     @commands.command(pass_context=True)
     async def invite(self, ctx):
+        '''Link to invite the bot'''
         embed = Embed(description="To invite the bot to your server, click [here](https://discordapp.com/api/oauth2/authorize?client_id=424540163579052043&permissions=2048&scope=bot)", colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)))
         await ctx.send(embed=embed)
     @commands.command(pass_context=True, aliases=["suggestion"])
     async def support(self,ctx):
+        '''Link to the support server'''
         embed = Embed(description="If you need support or have a suggestion for the bot, click [here](https://discord.gg/3xuDR3G)", colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)))
         await ctx.send(embed=embed)
     @commands.command(aliases=['credit'])
     async def credits(self,ctx):
+        '''Display credits for the bot's lists and other data'''
         credits = f'''Original weapon, mode and map lists created by {self.bot.get_user(196685856466010112)} at my request (he was very helpful when making the three bots that preceded this one)
+Weapon info list created by me [Starwort#6129]
+All lists maintained by me [Starwort#6129]
 Hide & Seek emoji created by MrSatnav [tag unknown], an ex-member of Ink2Death
 Sub and Special Weapon emoji from the Splatoon Wiki (<https://splatoonwiki.org>)
 All other emoji created by the talented {self.bot.get_user(366208016187523082)}

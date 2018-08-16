@@ -3,15 +3,7 @@ from discord.ext import commands
 import time
 from os import listdir
 from os.path import isfile, join
-from requests import get  # to make GET request
 from ast import literal_eval
-def download(url, file_name):
-    # open in binary mode
-    with open(file_name, "wb") as file:
-        # get request
-        response = get(url)
-        # write to file
-        file.write(response.content)
 import sys, traceback
 description = """A bot to randomise weapons for Splatoon 2
 
@@ -34,10 +26,10 @@ def prefix(bot, ctx):
     except KeyError:
         extraprefix = None
     except AttributeError:
-        print('we in dm')
+        #print('we in dm')
         extraprefix = ''
     if extraprefix is not None:
-        print('we adding a prefix which is '+repr(extraprefix))
+        #print('we adding a prefix which is '+repr(extraprefix))
         prefix = [extraprefix, pre]
     else:
         prefix = [pre]
