@@ -7,14 +7,14 @@ from ast import literal_eval
 def download(url, file_name):
     with open(file_name, "wb") as file:
         file.write(get(url).content)
-class Map():
+class MapRandomiser():
     def __init__(self,bot):
         self.bot = bot
         download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt")
         tmp = open("map_list.txt")
         self.list = [i.strip() for i in tmp.readlines()]
         tmp.close()
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True,aliases=['stage'])
     async def map(self,ctx):
         map = choice(self.list)
         map = map.split(" ")
@@ -37,4 +37,4 @@ class Map():
         embed.add_field(name="Map Chosen:", value=wname)
         await ctx.send(embed=embed)
 def setup(bot):
-    bot.add_cog(Map(bot))
+    bot.add_cog(MapRandomiser(bot))
