@@ -35,7 +35,7 @@ def prefix(bot, ctx):
         extraprefix = None
     except AttributeError:
         extraprefix = ''
-    if extraprefix:
+    if extraprefix is not None:
         prefix = [extraprefix, pre]
     else:
         prefix = [pre]
