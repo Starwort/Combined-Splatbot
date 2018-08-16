@@ -34,8 +34,10 @@ def prefix(bot, ctx):
     except KeyError:
         extraprefix = None
     except AttributeError:
+        print('we in dm')
         extraprefix = ''
     if extraprefix is not None:
+        print('we adding a prefix which is '+repr(extraprefix))
         prefix = [extraprefix, pre]
     else:
         prefix = [pre]
