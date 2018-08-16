@@ -4,16 +4,33 @@ from random import choice,shuffle
 import datetime
 from requests import get  # to make GET request
 from ast import literal_eval
-def download(url, file_name):
-    with open(file_name, "wb") as file:
-        file.write(get(url).content)
+import asyncio, aiohttp, aiofiles
 class MapRandomiser():
     def __init__(self,bot):
+        self.client = aiohttp.ClientSession()
         self.bot = bot
-        download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt")
         tmp = open("map_list.txt")
         self.list = [i.strip() for i in tmp.readlines()]
         tmp.close()
+    def __unload(self):
+        asyncio.get_event_loop().create_task(self.client.close())
+    async def get(self,*args, **kwargs):
+        response = await self.client.request('GET', *args, **kwargs)
+        return await response.read()
+    async def download(self,url, name):
+        content = await self.get(url)
+        async with aiofiles.open(name,'wb') as file:
+            await file.write(content)
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def updatelists(self,ctx):
+        await ctx.send('Updating `map_list.txt`...')
+        await self.download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt")
+        await ctx.send('Done!')
+        await ctx.send('Resetting the internal list cache...\n`map_list.txt`...')
+        async with aiofiles.open("map_list.txt") as tmp:
+            self.list = [i.strip() for i in await tmp.readlines()]  
+        await ctx.send('Done!')
     @commands.command(pass_context=True,aliases=['stage'])
     async def map(self,ctx):
         shuffle(self.list)
