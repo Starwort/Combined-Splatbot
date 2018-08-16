@@ -33,6 +33,8 @@ def prefix(bot, ctx):
         extraprefix = prefixes[ctx.guild.id]
     except KeyError:
         extraprefix = None
+    except AttributeError:
+        extraprefix = ''
     if extraprefix:
         prefix = [extraprefix, pre]
     else:
