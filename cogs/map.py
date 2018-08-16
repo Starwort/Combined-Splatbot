@@ -23,7 +23,7 @@ class MapRandomiser():
             await file.write(content)
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def updatelists(self,ctx):
+    async def updatemaps(self,ctx):
         await ctx.send('Updating `map_list.txt`...')
         await self.download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt")
         await ctx.send('Done!')
