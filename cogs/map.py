@@ -1,6 +1,6 @@
 from discord import *
 from discord.ext import commands
-from random import choice
+from random import choice,shuffle
 import datetime
 from requests import get  # to make GET request
 from ast import literal_eval
@@ -16,6 +16,7 @@ class MapRandomiser():
         tmp.close()
     @commands.command(pass_context=True,aliases=['stage'])
     async def map(self,ctx):
+        shuffle(self.list)
         map = choice(self.list)
         map = map.split(" ")
         wname = " ".join(map[slice(len(map)-1)])
