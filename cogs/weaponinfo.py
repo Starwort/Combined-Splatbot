@@ -17,6 +17,28 @@ class WeaponInfo():
         self.matchlist = [i[0] for i in self.list]
         self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
         self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
+        self.squid_colours = [ 
+            0xfe447d, # pink
+            0xf78f2e, # orange
+            0xfedc0c, # yellow orange
+            0xd1f20a, # lime green
+            0x5cd05b, # emerald green
+            0x03c1cd, # teal
+            0x0e10e6, # blue
+            0x9208e7, # violet
+            0xf84c00, # red violet
+            0xf3f354, # yellow
+            0xbff1e5, # mint
+            0x3bc335, # green
+            0x7af5ca, # sea green
+            0x448bff, # light blue
+            0x101ab3, # dark blue
+            0xd645c8, # fuchsia
+            0x0afe15, # neon green
+            0x0acdfe, # cyan
+            0xff9600, # neon orange
+            0xb21ca1  # dark fuchsia
+        ]
     def __unload(self):
         asyncio.get_event_loop().create_task(self.client.close())
     async def get(self,*args, **kwargs):
@@ -60,7 +82,8 @@ class WeaponInfo():
         data = self.list[index]
         wdata = data[2:]
         wproto = self.prototypes[self.protoindexes[wdata[0]]]
-        embed=Embed(title="Weapon Info", description=f"Info for weapon {match} (Search: {weapon})", colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))))
+        shuffle(self.squid_colours)
+        embed=Embed(title="Weapon Info", description=f"Info for weapon {match} (Search: {weapon})", colour=Colour(choice(self.squid_colours)))
         embed.set_thumbnail(url=data[1])
         embed.add_field(name="Type:", value=wdata[0], inline=False)
         embed.add_field(name=wproto[1], value=wdata[1], inline=True)

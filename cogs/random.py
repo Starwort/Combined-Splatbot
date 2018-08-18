@@ -21,11 +21,36 @@ class Random():
         tmp = open("weapon_list.txt")
         self.lists.weapon = [i.strip() for i in tmp.readlines()]
         tmp.close()
+        tmp = open('ability_list.txt.')
+        self.lists.ability = literal_eval(tmp.read())
+        tmp.close()
         self.turf = self.lists.mode[0]
         self.tower = self.lists.mode[1]
         self.rain = self.lists.mode[2]
         self.zones = self.lists.mode[3]
         self.clam = self.lists.mode[4]
+        self.squid_colours = [ 
+            0xfe447d, # pink
+            0xf78f2e, # orange
+            0xfedc0c, # yellow orange
+            0xd1f20a, # lime green
+            0x5cd05b, # emerald green
+            0x03c1cd, # teal
+            0x0e10e6, # blue
+            0x9208e7, # violet
+            0xf84c00, # red violet
+            0xf3f354, # yellow
+            0xbff1e5, # mint
+            0x3bc335, # green
+            0x7af5ca, # sea green
+            0x448bff, # light blue
+            0x101ab3, # dark blue
+            0xd645c8, # fuchsia
+            0x0afe15, # neon green
+            0x0acdfe, # cyan
+            0xff9600, # neon orange
+            0xb21ca1  # dark fuchsia
+        ]
     def __unload(self):
         asyncio.get_event_loop().create_task(self.client.close())
     async def get(self,*args, **kwargs):
@@ -47,6 +72,9 @@ class Random():
         out += '\nDone!\nUpdating `weapon_list.txt`...'
         await msg.edit(out)
         await self.download("http://starbright.dyndns.org/starwort/weapon_list.txt","weapon_list.txt")
+        out += '\nDone!\nUpdating `ability_list.txt`...'
+        await msg.edit(out)
+        await self.download("http://starbright.dyndns.org/starwort/ability_list.txt","ability_list.txt")
         out += '\nDone!\nResetting the internal list cache...\n`map_list.txt`...'
         await msg.edit(out)
         async with aiofiles.open("map_list.txt") as tmp:
@@ -58,7 +86,11 @@ class Random():
         out += '\nDone!\n`weapon_list.txt`...'
         await msg.edit(out)
         async with aiofiles.open("weapon_list.txt") as tmp:
-            self.lists.mode = [i.strip() for i in await tmp.readlines()]  
+            self.lists.weapon = [i.strip() for i in await tmp.readlines()]  
+        out += '\nDone!\n`ability_list.txt`...'
+        await msg.edit(out)
+        async with aiofiles.open("ability_list.txt") as tmp:
+            self.lists.ability = literal_eval(await tmp.read()) 
         out += '\nDone!\nResetting inherited properties...'
         await msg.edit(out)
         self.turf = self.lists.mode[0]
@@ -85,7 +117,8 @@ class Random():
         wurl = map[-1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
-        embed = Embed(colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
+        shuffle(self.squid_colours)
+        embed = Embed(colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
         embed.set_image(url=wurl)
         embed.set_author(name="Random Map!", icon_url=ctx.me.avatar_url)
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)), icon_url=avatar)
@@ -115,7 +148,8 @@ class Random():
         wurl = Mode[-1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
-        embed = Embed(colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
+        shuffle(self.squid_colours)
+        embed = Embed(colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
         embed.set_image(url=wurl)
         embed.set_author(name="Random Mode!", icon_url=ctx.me.avatar_url)
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)), icon_url=avatar)
@@ -139,7 +173,8 @@ class Random():
         wurl = weapon[-1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
-        embed = Embed(colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
+        shuffle(self.squid_colours)
+        embed = Embed(colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
         embed.set_image(url=wurl)
         embed.set_author(name="Random Weapon!", icon_url=ctx.me.avatar_url)
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)), icon_url=avatar)

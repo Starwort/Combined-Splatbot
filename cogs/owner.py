@@ -1,6 +1,7 @@
 from discord.ext import commands
 from discord import *
 from subprocess import run, PIPE
+import aiofiles
 class OwnerCog:
 
     def __init__(self, bot):
@@ -77,13 +78,20 @@ class OwnerCog:
         if cog:
             ctx.command = self.cog_reload
             await ctx.reinvoke()
+    @commands.command(name="restart",hidden=True)
+    @commands.is_owner()
+    #@commands.is_owner()
+    async def bot_reload(self, ctx):
+        async with aiofiles.open('restart.txt','w') as file:
+            await file.write('a')
+        await self.bot.logout()
     @commands.command(hidden=True)
     @commands.is_owner()
     async def prefixdebug(self,ctx,guild_id : int, prefix : str):
         self.bot.additionalprefixdata[guild_id] = prefix
         if prefix == '': del self.bot.additionalprefixdata[guild_id]
-        with open('prefixes.txt','w') as file:
-            file.write(repr(self.bot.additionalprefixdata))
+        async with aiofiles.open('prefixes.txt','w') as file:
+            await file.write(repr(self.bot.additionalprefixdata))
         guild = self.bot.get_guild(guild_id)
         await ctx.send(f'Set prefix for {guild.name if guild else "[INVALID SERVER]"} to `{prefix}`')
 def setup(bot):
