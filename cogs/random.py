@@ -216,7 +216,7 @@ class Random():
         await ctx.send(content=out.strip())
     @commands.command(pass_context=True, name="teams", aliases=["generateTeams","pb"])
     async def generateTeams(self, ctx, *, players: str):
-        "Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\nrandom|teams player a|player b|player c"
+        '''Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\nrandom|teams player a|player b|player c'''
         players = players.split("|")
         noP = len(players)
         if noP < 2 or noP > 10:
@@ -247,5 +247,70 @@ class Random():
                 out += f"{i:^20}\n"
         cropped = out.strip("\n")
         await ctx.send(content=f"Teams:```{cropped}```")
+    @commands.command()
+    async def gear(self,ctx,gearType:str = 'pure'):
+        '''Randomises your gear abilities for you e.g. for PB.
+
+Gear Types:
+ - pure
+  -> Assumed you have every piece of gear as having the same main and all three sub abilities
+ - triad
+  -> Assumed all your gear has the same three sub abilities, but not necessarily the matching main
+ - random
+  -> This mode is completely useless, the main and sub abilities are completely random, no pattern
+  -> It is highly recommended to not use this mode'''
+        gearType = gearType.lower()
+        if gearType not in ['pure','triad','random']:
+            await ctx.send('That isn\'t a valid gear type')
+            return
+        gear = {
+            'head': {
+                'main': None,
+                'sub1': None,
+                'sub2': None,
+                'sub3': None
+            },
+            'body': {
+                'main': None,
+                'sub1': None,
+                'sub2': None,
+                'sub3': None
+            },
+            'shoe': {
+                'main': None,
+                'sub1': None,
+                'sub2': None,
+                'sub3': None
+            }
+        }
+        if gearType == 'pure':
+            for i in gear.keys():
+                ab = self.lists.ability['all'][choice(self.lists.ability['all'].keys())]
+                for j in gear[i].keys():
+                    gear[i][j] = ab
+        elif gearType == 'triad':
+            for i in gear.keys():
+                gear[i]['main'] = self.lists.ability[i][choice(self.lists.ability[i].keys())]
+                ab = self.lists.ability['all'][choice(self.lists.ability['all'].keys())]
+                gear[i]['sub1'] = ab
+                gear[i]['sub2'] = ab
+                gear[i]['sub3'] = ab
+        elif gearType == 'random':
+            for i in gear.keys():
+                gear[i]['main'] = self.lists.ability[i][choice(self.lists.ability[i].keys())]
+                for j in range(3):
+                    gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(self.lists.ability['all'].keys())]
+        shuffle(self.squid_colours)
+        embed = Embed(title='Randomised Gear Abilities',description=f'Gear Type: {gearType.title()}',colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
+        embed.add_field(name='Headgear',value=f'{gear["head"]["main"][0]}\n{gear["head"]["sub1"][0]}\n{gear["head"]["sub2"][0]}\n{gear["head"]["sub3"][0]}',inline=True)
+        embed.add_field(name='Clothes',value=f'{gear["body"]["main"][0]}\n{gear["body"]["sub1"][0]}\n{gear["body"]["sub2"][0]}\n{gear["body"]["sub3"][0]}',inline=True)
+        embed.add_field(name='Shoes',value=f'{gear["shoe"]["main"][0]}\n{gear["shoe"]["sub1"][0]}\n{gear["shoe"]["sub2"][0]}\n{gear["shoe"]["sub3"][0]}',inline=True)
+        abilities = {}
+        for i in gear.keys():
+            for j in gear[i].keys():
+                abilities[gear[i][j]] = abilities.get(gear[i][j],0) + 1
+                if j == 'main':
+                    abilities[gear[i][j]] += 2
+        embed.add_field(name='Total Power Increase (in equivalent sub-abilities)',value='\n'.join([f'{i[1]}x{abilities[i]}' for i in abilities.keys()]))
 def setup(bot):
     bot.add_cog(Random(bot))
