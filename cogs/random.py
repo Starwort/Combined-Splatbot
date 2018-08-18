@@ -21,7 +21,7 @@ class Random():
         tmp = open("weapon_list.txt")
         self.lists.weapon = [i.strip() for i in tmp.readlines()]
         tmp.close()
-        tmp = open('ability_list.txt.')
+        tmp = open('ability_list.txt')
         self.lists.ability = literal_eval(tmp.read())
         tmp.close()
         self.turf = self.lists.mode[0]
