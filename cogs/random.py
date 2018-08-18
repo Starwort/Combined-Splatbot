@@ -64,42 +64,42 @@ class Random():
     @commands.is_owner()
     async def updaterandom(self,ctx):
         out = 'Updating `map_list.txt`...'
-        msg = await ctx.send(out)
+        msg = await ctx.send(content=out)
         await self.download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt")
         out += '\nDone!\nUpdating `map_list.txt`...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/mode_list.txt","mode_list.txt")
         out += '\nDone!\nUpdating `weapon_list.txt`...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/weapon_list.txt","weapon_list.txt")
         out += '\nDone!\nUpdating `ability_list.txt`...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/ability_list.txt","ability_list.txt")
         out += '\nDone!\nResetting the internal list cache...\n`map_list.txt`...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         async with aiofiles.open("map_list.txt") as tmp:
             self.lists.map = [i.strip() for i in await tmp.readlines()]  
         out += '\nDone!\n`mode_list.txt`...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         async with aiofiles.open("mode_list.txt") as tmp:
             self.lists.mode = [i.strip() for i in await tmp.readlines()]  
         out += '\nDone!\n`weapon_list.txt`...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         async with aiofiles.open("weapon_list.txt") as tmp:
             self.lists.weapon = [i.strip() for i in await tmp.readlines()]  
         out += '\nDone!\n`ability_list.txt`...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         async with aiofiles.open("ability_list.txt") as tmp:
             self.lists.ability = literal_eval(await tmp.read()) 
         out += '\nDone!\nResetting inherited properties...'
-        await msg.edit(out)
+        await msg.edit(content=out)
         self.turf = self.lists.mode[0]
         self.tower = self.lists.mode[1]
         self.rain = self.lists.mode[2]
         self.zones = self.lists.mode[3]
         self.clam = self.lists.mode[4]
         out += '\nDone!'
-        await msg.edit(out)
+        await msg.edit(content=out)
     @commands.command(pass_context=True,aliases=['stage'])
     async def map(self,ctx):
         '''Randomly select a map'''
