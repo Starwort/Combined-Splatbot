@@ -312,5 +312,6 @@ Gear Types:
                 if j == 'main':
                     abilities[gear[i][j]] += 2
         embed.add_field(name='Total Power Increase (in equivalent sub-abilities)',value='\n'.join([f'{i[1]}x{abilities[i]}' for i in abilities.keys()]))
+        await ctx.send(embed=embed)
 def setup(bot):
     bot.add_cog(Random(bot))
