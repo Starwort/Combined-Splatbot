@@ -216,7 +216,7 @@ class Random():
         await ctx.send(content=out.strip())
     @commands.command(pass_context=True, name="teams", aliases=["generateTeams","pb"])
     async def generateTeams(self, ctx, *, players: str):
-        '''Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\nrandom|teams player a|player b|player c'''
+        '''Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\n[p]teams player a|player b|player c'''
         players = players.split("|")
         noP = len(players)
         if noP < 2 or noP > 10:
