@@ -248,7 +248,7 @@ class Random():
         cropped = out.strip("\n")
         await ctx.send(content=f"Teams:```{cropped}```")
     @commands.command()
-    async def gear(self,ctx,gearType:str = 'pure',displayType:str = 'name'):
+    async def gear(self,ctx,gearType:str = 'pure',displayType:str = 'both'):
         '''Randomises your gear abilities for you e.g. for PB.
 
 Gear Types:
@@ -265,11 +265,11 @@ Gear Types:
 Display Types:
  - name
   -> Display the gear abilities with name only
-  -> Default mode
  - emoji
   -> Display the gear abilities with emoji only
  - both
-  -> Display the gear abilities with both name and emoji'''
+  -> Display the gear abilities with both name and emoji
+  -> Default mode'''
         gearType = gearType.lower()
         if gearType not in ['pure','triad','random']:
             await ctx.send('That isn\'t a valid gear type')
