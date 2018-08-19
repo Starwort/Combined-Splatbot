@@ -285,13 +285,13 @@ Gear Types:
         }
         if gearType == 'pure':
             for i in gear.keys():
-                ab = self.lists.ability['all'][choice(self.lists.ability['all'].keys())]
+                ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
                 for j in gear[i].keys():
                     gear[i][j] = ab
         elif gearType == 'triad':
             for i in gear.keys():
                 gear[i]['main'] = self.lists.ability[i][choice(self.lists.ability[i].keys())]
-                ab = self.lists.ability['all'][choice(self.lists.ability['all'].keys())]
+                ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
                 gear[i]['sub1'] = ab
                 gear[i]['sub2'] = ab
                 gear[i]['sub3'] = ab
@@ -299,7 +299,7 @@ Gear Types:
             for i in gear.keys():
                 gear[i]['main'] = self.lists.ability[i][choice(self.lists.ability[i].keys())]
                 for j in range(3):
-                    gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(self.lists.ability['all'].keys())]
+                    gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
         shuffle(self.squid_colours)
         embed = Embed(title='Randomised Gear Abilities',description=f'Gear Type: {gearType.title()}',colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
         embed.add_field(name='Headgear',value=f'{gear["head"]["main"][0]}\n{gear["head"]["sub1"][0]}\n{gear["head"]["sub2"][0]}\n{gear["head"]["sub3"][0]}',inline=True)
