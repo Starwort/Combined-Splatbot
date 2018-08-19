@@ -302,9 +302,9 @@ Gear Types:
                     gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
         shuffle(self.squid_colours)
         embed = Embed(title='Randomised Gear Abilities',description=f'Gear Type: {gearType.title()}',colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
-        embed.add_field(name='Headgear',value=f'{gear["head"]["main"][0]}\n{gear["head"]["sub1"][0]}\n{gear["head"]["sub2"][0]}\n{gear["head"]["sub3"][0]}',inline=True)
-        embed.add_field(name='Clothes',value=f'{gear["body"]["main"][0]}\n{gear["body"]["sub1"][0]}\n{gear["body"]["sub2"][0]}\n{gear["body"]["sub3"][0]}',inline=True)
-        embed.add_field(name='Shoes',value=f'{gear["shoe"]["main"][0]}\n{gear["shoe"]["sub1"][0]}\n{gear["shoe"]["sub2"][0]}\n{gear["shoe"]["sub3"][0]}',inline=True)
+        embed.add_field(name='Headgear',value=f'{gear["head"]["main"][0]}\n\n{gear["head"]["sub1"][0]}\n{gear["head"]["sub2"][0]}\n{gear["head"]["sub3"][0]}',inline=True)
+        embed.add_field(name='Clothes',value=f'{gear["body"]["main"][0]}\n\n{gear["body"]["sub1"][0]}\n{gear["body"]["sub2"][0]}\n{gear["body"]["sub3"][0]}',inline=True)
+        embed.add_field(name='Shoes',value=f'{gear["shoe"]["main"][0]}\n\n{gear["shoe"]["sub1"][0]}\n{gear["shoe"]["sub2"][0]}\n{gear["shoe"]["sub3"][0]}',inline=True)
         abilities = {}
         for i in gear.keys():
             for j in gear[i].keys():
