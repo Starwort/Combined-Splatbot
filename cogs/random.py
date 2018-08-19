@@ -248,20 +248,34 @@ class Random():
         cropped = out.strip("\n")
         await ctx.send(content=f"Teams:```{cropped}```")
     @commands.command()
-    async def gear(self,ctx,gearType:str = 'pure'):
+    async def gear(self,ctx,gearType:str = 'pure',displayType:str = 'name'):
         '''Randomises your gear abilities for you e.g. for PB.
 
 Gear Types:
  - pure
   -> Assumed you have every piece of gear as having the same main and all three sub abilities
+  -> Disables main-only gear abilities
+  -> Default mode
  - triad
   -> Assumed all your gear has the same three sub abilities, but not necessarily the matching main
  - random
   -> This mode is completely useless, the main and sub abilities are completely random, no pattern
-  -> It is highly recommended to not use this mode'''
+  -> It is highly recommended to not use this mode
+
+Display Types:
+ - name
+  -> Display the gear abilities with name only
+  -> Default mode
+ - emoji
+  -> Display the gear abilities with emoji only
+ - both
+  -> Display the gear abilities with both name and emoji'''
         gearType = gearType.lower()
         if gearType not in ['pure','triad','random']:
             await ctx.send('That isn\'t a valid gear type')
+            return
+        elif displayType not in ['name','emoji','both']:
+            await ctx.send('That isn\'t a valid display mode')
             return
         gear = {
             'head': {
@@ -300,18 +314,23 @@ Gear Types:
                 gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
                 for j in range(3):
                     gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
+        formats = {
+            'name':'{0[0]}\n\n{1[0]}\n{2[0]}\n{3[0]}',
+            'emoji':'{0[1]}\n\n{1[1]}\n{2[1]}\n{3[1]}',
+            'both':'{0[1]} {0[0]}\n\n{1[1]} {1[0]}\n{2[1]} {2[0]}\n{3[1]} {3[0]}'
+        }
         shuffle(self.squid_colours)
         embed = Embed(title='Randomised Gear Abilities',description=f'Gear Type: {gearType.title()}',colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
-        embed.add_field(name='Headgear',value=f'{gear["head"]["main"][0]}\n\n{gear["head"]["sub1"][0]}\n{gear["head"]["sub2"][0]}\n{gear["head"]["sub3"][0]}',inline=True)
-        embed.add_field(name='Clothes',value=f'{gear["body"]["main"][0]}\n\n{gear["body"]["sub1"][0]}\n{gear["body"]["sub2"][0]}\n{gear["body"]["sub3"][0]}',inline=True)
-        embed.add_field(name='Shoes',value=f'{gear["shoe"]["main"][0]}\n\n{gear["shoe"]["sub1"][0]}\n{gear["shoe"]["sub2"][0]}\n{gear["shoe"]["sub3"][0]}',inline=True)
-        abilities = {}
+        embed.add_field(name='Headgear',value=formats[displayType].format(gear["head"]["main"],gear["head"]["sub1"],gear["head"]["sub2"],gear["head"]["sub3"]),inline=True)
+        embed.add_field(name='Clothes',value=formats[displayType].format(gear["body"]["main"],gear["body"]["sub1"],gear["body"]["sub2"],gear["body"]["sub3"]),inline=True)
+        embed.add_field(name='Shoes',value=formats[displayType].format(gear["shoe"]["main"],gear["shoe"]["sub1"],gear["shoe"]["sub2"],gear["shoe"]["sub3"]),inline=True)
+        """ abilities = {}
         for i in gear.keys():
             for j in gear[i].keys():
                 abilities[gear[i][j]] = abilities.get(gear[i][j],0) + 1
                 if j == 'main':
                     abilities[gear[i][j]] += 2
-        embed.add_field(name='Total Power Increase (in equivalent sub-abilities)',value='\n'.join([f'{i[1]}x{abilities[i]}' for i in abilities.keys()]))
+        embed.add_field(name='Total Power Increase (in equivalent sub-abilities)',value='\n'.join([f'{i[1]}x{abilities[i]}' for i in abilities.keys()])) """
         await ctx.send(embed=embed)
 def setup(bot):
     bot.add_cog(Random(bot))
