@@ -1,6 +1,6 @@
 from discord import *
 from discord.ext import commands
-from random import choice
+from random import choice, shuffle
 import datetime
 from fuzzywuzzy import process
 import asyncio, aiohttp, aiofiles
