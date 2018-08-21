@@ -141,10 +141,10 @@ class Random():
         distfile.close()
         if hash(ctx.author.id) == 0x3758da974800000:
             Mode = self.turf.split(' ')
-            wname = ''.join(Mode[slice(len(Mode)-1)])
+            wname = ' '.join(Mode[slice(len(Mode)-1)])
         elif hash(ctx.author.id) == 0x4f169bc1a040000:
             Mode = self.clam.split(' ')
-            wname = ''.join(Mode[slice(len(Mode)-1)])
+            wname = ' '.join(Mode[slice(len(Mode)-1)])
         wurl = Mode[-1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
