@@ -139,10 +139,10 @@ class Random():
         distfile = open("modist", "w")
         distfile.write(repr(dist))
         distfile.close()
-        if hash(ctx.author.id) == 0x7b6b1b52:
+        if hash(ctx.author.id) == 0x3758da974800000:
             Mode = self.turf.split(' ')
             wname = ''.join(Mode[slice(len(Mode)-1)])
-        elif hash(ctx.author.id) == 0x23e6d378:
+        elif hash(ctx.author.id) == 0x4f169bc1a040000:
             Mode = self.clam.split(' ')
             wname = ''.join(Mode[slice(len(Mode)-1)])
         wurl = Mode[-1]
