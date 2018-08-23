@@ -64,7 +64,7 @@ class Help(formatter.HelpFormatter):
             await dest.send(embed=embed)
             return
         help_msg = await dest.send(embed = embeds[0])
-        if ctx.channel.permissions_for(ctx.me).value & 65600 == 65600:
+        if dest.permissions_for(self.bot.user).value & 65600 == 65600:
             home, back, forward, end = '⏮', '◀', '▶', '⏭'
             stop = '⏹'
             valid_r = [home,back,forward,end,stop]
@@ -97,9 +97,9 @@ class Help(formatter.HelpFormatter):
                 pass
             await help_msg.delete()
         else:
-            page_msg = await ctx.send('There are {} help pages. Send a number to see the corresponding page. Send any other message to exit.'.format(len(embeds)))
+            page_msg = await dest.send('There are {} help pages. Send a number to see the corresponding page. Send any other message to exit.'.format(len(embeds)))
             def is_not_me(msg):
-                if msg.author.id != self.bot.user.id and msg.channel == ctx.channel:
+                if msg.author.id != self.bot.user.id and msg.channel == dest.channel:
                     return True
             while True:
                 reply = await self.bot.wait_for('message', check=is_not_me)
