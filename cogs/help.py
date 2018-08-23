@@ -60,7 +60,7 @@ class Help(formatter.HelpFormatter):
     async def send(self, dest, content=None, embeds=None):
         if len(embeds) == 1:
             embed = embeds[0]
-            embed.set_author('Combined Splatbot Help Manual',icon_url=ctx.me.avatar_url)
+            embed.set_author('Combined Splatbot Help Manual',icon_url=self.bot.user.avatar_url)
             await dest.send(embed=embed)
             return
         help_msg = await dest.send(embed = embeds[0])
