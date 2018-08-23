@@ -64,7 +64,7 @@ class Help(formatter.HelpFormatter):
             await dest.send(embed=embed)
             return
         help_msg = await dest.send(embed = embeds[0])
-        if dest.permissions_for(self.bot.user).value & 65600 == 65600:
+        if dest.permissions_for(self.context.me).value & 65600 == 65600:
             home, back, forward, end = '⏮', '◀', '▶', '⏭'
             stop = '⏹'
             valid_r = [home,back,forward,end,stop]
