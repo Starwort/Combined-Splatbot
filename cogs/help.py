@@ -64,7 +64,7 @@ class Help(formatter.HelpFormatter):
             await dest.send(embed=embed)
             return
         help_msg = await dest.send(embed = embeds[0])
-        if dest.permissions_for(self.context.me).value & 65600 == 65600:
+        if dest.permissions_for(self.context.me).value & 65600 == 65600 or dest.permissions_for(self.context.me).value & 8 == 8:
             home, back, forward, end = '⏮', '◀', '▶', '⏭'
             stop = '⏹'
             valid_r = [home,back,forward,end,stop]
@@ -73,9 +73,11 @@ class Help(formatter.HelpFormatter):
             for i in valid_r:
                 await help_msg.add_reaction(i)
             await asyncio.sleep(0.1)
+            def check(reaction,user):
+                return reaction.emoji in valid_r and reaction.message.id == help_msg.id
             try:
                 while True:
-                    reaction, user = await self.bot.wait_for('reaction_add',timeout=120)
+                    reaction, user = await self.bot.wait_for('reaction_add',check=check,timeout=120)
                     try:
                         await help_msg.remove_reaction(reaction, user)
                     except:
