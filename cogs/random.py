@@ -242,7 +242,7 @@ class Random():
             if i == 0:
                 out += '-----------+-----------\n'
         if specs:
-            out += "-----------------------\n     Spectators\n-----------------------\n"
+            out += "-----------------------\n      Spectators\n-----------------------\n"
             for i in spec:
                 out += f"{i:^20}\n"
         cropped = out.strip("\n")
