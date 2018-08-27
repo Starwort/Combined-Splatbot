@@ -242,9 +242,11 @@ class Random():
         for i in range(playersPerSide):
             tmp = randint(0, noP - 1)
             teamA.append(players.pop(tmp).strip())
+            noP -= 1
         for i in range(playersPerSide):
             tmp = randint(0, noP - 1)
             teamB.append(players.pop(tmp).strip())
+            noP -= 1
         spec += players
         out = ""
         for i in range(playersPerSide + 1):
