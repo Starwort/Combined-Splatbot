@@ -29,6 +29,8 @@ class Random():
         self.rain = self.lists.mode[2]
         self.zones = self.lists.mode[3]
         self.clam = self.lists.mode[4]
+        self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
+        self.pp = self.lists.map[18]
         self.squid_colours = [ 
             0xfe447d, # pink
             0xf78f2e, # orange
@@ -98,6 +100,8 @@ class Random():
         self.rain = self.lists.mode[2]
         self.zones = self.lists.mode[3]
         self.clam = self.lists.mode[4]
+        self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
+        self.pp = self.lists.map[18]
         out += '\nDone!'
         await msg.edit(content=out)
     @commands.command(pass_context=True,aliases=['stage'])
@@ -107,13 +111,14 @@ class Random():
         map = choice(self.lists.map)
         map = map.split(" ")
         wname = " ".join(map[slice(len(map)-1)])
-        distfile = open("madist")
-        dist = literal_eval(distfile.read())
+        async with aiofiles.open("madist") as distfile:
+            dist = literal_eval(await distfile.read())
         dist[wname] = dist.get(wname, 0) + 1
-        distfile.close()
-        distfile = open("madist", "w")
-        distfile.write(repr(dist))
-        distfile.close()
+        async with aiofiles.open("madist", "w") as distfile:
+            await distfile.write(repr(dist))
+        if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
+            map = self.pp
+            wname = " ".join(map[slice(len(map)-1)])
         wurl = map[-1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
@@ -132,24 +137,22 @@ class Random():
         Mode = choice(self.lists.mode)
         Mode = Mode.split(" ")
         wname = " ".join(Mode[slice(len(Mode)-1)])
-        distfile = open("modist")
-        dist = literal_eval(distfile.read())
+        async with aiofiles.open("modist") as distfile:
+            dist = literal_eval(await distfile.read())
         dist[wname] = dist.get(wname, 0) + 1
-        distfile.close()
-        distfile = open("modist", "w")
-        distfile.write(repr(dist))
-        distfile.close()
-        if hash(ctx.author.id) == 0x3758da974800000:
+        async with aiofiles.open("modist", "w") as distfile:
+            await distfile.write(repr(dist))
+        if hash(ctx.author.id) in [0x3758da974800000]:
             Mode = self.turf.split(' ')
             wname = ' '.join(Mode[slice(len(Mode)-1)])
-        elif hash(ctx.author.id) == 0x4f169bc1a040000:
+        elif hash(ctx.author.id) in [0x4f169bc1a040000,0x4e6dd1e0484001c]:
             Mode = self.clam.split(' ')
             wname = ' '.join(Mode[slice(len(Mode)-1)])
         wurl = Mode[-1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
         shuffle(self.squid_colours)
-        embed = Embed(colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now())
+        embed = Embed(colour=Colour(choice(self.squid_colours)), timestamp=datetime.datetime.now()) 
         embed.set_image(url=wurl)
         embed.set_author(name="Random Mode!", icon_url=ctx.me.avatar_url)
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)), icon_url=avatar)
@@ -163,13 +166,16 @@ class Random():
         weapon = choice(self.lists.weapon)
         weapon = weapon.split(" ")
         wname = " ".join(weapon[slice(len(weapon)-1)])
-        distfile = open("wdist")
-        dist = literal_eval(distfile.read())
+        async with aiofiles.open("wdist") as distfile:
+            dist = literal_eval(await distfile.read())
         dist[wname] = dist.get(wname, 0) + 1
-        distfile.close()
-        distfile = open("wdist", "w")
-        distfile.write(repr(dist))
-        distfile.close()
+        async with aiofiles.open("wdist", "w") as distfile:
+            await distfile.write(repr(dist))
+        if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
+            shuffle(self.trollweps)
+            weapon = choice(self.trollweps)
+            weapon = weapon.split(" ")
+            wname = " ".join(weapon[slice(len(weapon)-1)])
         wurl = weapon[-1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
@@ -178,18 +184,17 @@ class Random():
         embed.set_image(url=wurl)
         embed.set_author(name="Random Weapon!", icon_url=ctx.me.avatar_url)
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)), icon_url=avatar)
-
         embed.add_field(name="Weapon Chosen:", value=wname)
         await ctx.send(embed=embed)
-    @commands.command(pass_context=True)
-    async def scrims(self,ctx, noScrims: int):
+    @commands.command(pass_context=True,aliases=['scrim','pb'])
+    async def scrims(self,ctx, noScrims: int = 1):
         """Generates N scrims; code originally produced by me for use in Spyke"""
         try:
             noScrims = int(noScrims)
-            if noScrims > 50:
+            if noScrims > 50 or noScrims <= 0:
                 raise Exception
         except:
-            await ctx.send(content="The number of scrims must be an integer and less than or equal to 50!")
+            await ctx.send(content="The number of scrims must be an integer, more than 0, and less than or equal to 50!")
             return
         scrims = []
         minus1map = None
@@ -212,30 +217,32 @@ class Random():
             minus1mode = mode
         out = "\n"
         for i in range(noScrims):
-            out += f'Game #{i+1}: {" ".join(scrims[i][1].split(" ")[slice(len(scrims[i][1].split(" "))-1)])} on {" ".join(scrims[i][0].split(" ")[slice(len(scrims[i][0].split(" "))-1)])}\n'
+            out += f'{f"Game #{i+1}: " if noScrims > 1 else ""}{" ".join(scrims[i][1].split(" ")[slice(len(scrims[i][1].split(" "))-1)])} on {" ".join(scrims[i][0].split(" ")[slice(len(scrims[i][0].split(" "))-1)])}\n'
         await ctx.send(content=out.strip())
     @commands.command(pass_context=True, name="teams", aliases=["generateTeams","pb"])
     async def generateTeams(self, ctx, *, players: str):
-        '''Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\n[p]teams player a|player b|player c'''
-        players = players.split("|")
-        noP = len(players)
-        if noP < 2 or noP > 10:
-            await ctx.send(content="Too many or too few players! (The number of players must fall under (2,10) [interval notation])")
+        '''Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\n[p]teams player a | player b | player c'''
+        players = players.split('\\|\\|\\')
+        trollPlayer = int(players[1].strip())
+        players = players[0].split("|")
+        noP = len(players) - (1 if trollPlayer is not None else 0)
+        if noP < 2 or len(players) > 10:
+            await ctx.send(content="Too many or too few players! (The number of players must fall under `[2,10]` [interval notation])")
             return
         playersPerSide = min(noP // 2, 4)
         specs = noP - 2 * playersPerSide
         teamA = ["Alpha Team"]
         teamB = ["Bravo Team"]
         spec = []
+        if trollPlayer is not None:
+            spec += [players.pop(trollPlayer)]
         for i in range(playersPerSide):
-            tmp = randint(0, len(players) - 1)
-            teamA.append(players[tmp].strip())
-            del players[tmp]
+            tmp = randint(0, noP - 1)
+            teamA.append(players.pop(tmp).strip())
         for i in range(playersPerSide):
-            tmp = randint(0, len(players) - 1)
-            teamB.append(players[tmp].strip())
-            del players[tmp]
-        spec = players
+            tmp = randint(0, noP - 1)
+            teamB.append(players.pop(tmp).strip())
+        spec += players
         out = ""
         for i in range(playersPerSide + 1):
             out += f"{teamA[i]:^10} | {teamB[i]:^10}\n"
@@ -271,6 +278,7 @@ Display Types:
   -> Display the gear abilities with both name and emoji
   -> Default mode'''
         gearType = gearType.lower()
+        displayType = displayType.lower()   
         if gearType not in ['pure','triad','random']:
             await ctx.send('That isn\'t a valid gear type')
             return
