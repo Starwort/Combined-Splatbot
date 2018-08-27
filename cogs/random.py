@@ -223,7 +223,10 @@ class Random():
     async def generateTeams(self, ctx, *, players: str):
         '''Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\n[p]teams player a | player b | player c'''
         players = players.split('\\|\\|\\')
-        trollPlayer = int(players[1].strip())
+        try:
+            trollPlayer = int(players[1].strip())
+        except:
+            trollPlayer = None
         players = players[0].split("|")
         noP = len(players) - (1 if trollPlayer is not None else 0)
         if noP < 2 or len(players) > 10:
@@ -249,9 +252,9 @@ class Random():
             if i == 0:
                 out += '-----------+-----------\n'
         if specs:
-            out += "-----------------------\n      Spectators\n-----------------------\n"
+            out += "-----------------------\n      Spectators:\n-----------------------\n"
             for i in spec:
-                out += f"{i:^20}\n"
+                out += f"{i:^23}\n"
         cropped = out.strip("\n")
         await ctx.send(content=f"Teams:```{cropped}```")
     @commands.command()
