@@ -1,3 +1,7 @@
+# Copyright (C) Kaiju Systems - All Rights Reserved
+# Unauthorised copying of this file, via any medium is strictly prohibited
+# This licence is preserved through open-sourcing
+# Written by Starwort <starwort.computing@gmail.com>, July 2018
 from discord import *
 from discord.ext import commands
 from random import choice, shuffle
