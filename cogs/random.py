@@ -186,7 +186,7 @@ class Random():
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)), icon_url=avatar)
         embed.add_field(name="Weapon Chosen:", value=wname)
         await ctx.send(embed=embed)
-    @commands.command(pass_context=True,aliases=['scrim','pb'])
+    @commands.command(pass_context=True,aliases=['scrim'])
     async def scrims(self,ctx, noScrims: int = 1):
         """Generates N scrims; code originally produced by me for use in Spyke"""
         try:
