@@ -253,7 +253,7 @@ class Random():
             out += f"{teamA[i]:^10} | {teamB[i]:^10}\n"
             if i == 0:
                 out += '-----------+-----------\n'
-        if specs:
+        if spec:
             out += "-----------------------\n      Spectators:\n-----------------------\n"
             for i in spec:
                 out += f"{i:^23}\n"
@@ -345,5 +345,8 @@ Display Types:
                     abilities[gear[i][j]] += 2
         embed.add_field(name='Total Power Increase (in equivalent sub-abilities)',value='\n'.join([f'{i[1]}x{abilities[i]}' for i in abilities.keys()])) """
         await ctx.send(embed=embed)
+    @commands.command()
+    async def number(self,ctx,lower:int,upper:int):
+        await ctx.send(f'Your random number is {randint(lower,upper)}')
 def setup(bot):
     bot.add_cog(Random(bot))
