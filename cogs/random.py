@@ -493,7 +493,7 @@ Display Types:
         shuffle(self.squid_colours)
         embeds['meta'] = Embed(colour=choice(self.squid_colours),title='Private Battle Settings')
         embeds['alpha'] = Embed(colour=self.alpha,title='Alpha Team')
-        embeds['bravo'] = Embed(colour=choice(self.squid_colours),title='Bravo Team')
+        embeds['bravo'] = Embed(colour=self.bravo,title='Bravo Team')
         embeds['spec'] = Embed(title='Spectating')
         for team in ['alpha','bravo']:
             for player in pb[team]:
