@@ -408,11 +408,15 @@ Display Types:
             }
             if gearType == 'pure':
                 for i in gear.keys():
+                    if i == 'weapon':
+                        continue
                     ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
                     for j in gear[i].keys():
                         gear[i][j] = ab
             elif gearType == 'triad':
                 for i in gear.keys():
+                    if i == 'weapon':
+                        continue
                     gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
                     ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
                     gear[i]['sub1'] = ab
@@ -420,6 +424,8 @@ Display Types:
                     gear[i]['sub3'] = ab
             elif gearType == 'random':
                 for i in gear.keys():
+                    if i == 'weapon':
+                        continue
                     gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
                     for j in range(3):
                         gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
@@ -462,11 +468,15 @@ Display Types:
             }
             if gearType == 'pure':
                 for i in gear.keys():
+                    if i == 'weapon':
+                        continue
                     ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
                     for j in gear[i].keys():
                         gear[i][j] = ab
             elif gearType == 'triad':
                 for i in gear.keys():
+                    if i == 'weapon':
+                        continue
                     gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
                     ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
                     gear[i]['sub1'] = ab
@@ -474,6 +484,8 @@ Display Types:
                     gear[i]['sub3'] = ab
             elif gearType == 'random':
                 for i in gear.keys():
+                    if i == 'weapon':
+                        continue
                     gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
                     for j in range(3):
                         gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
