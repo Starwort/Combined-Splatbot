@@ -351,6 +351,13 @@ Display Types:
         await ctx.send(f'Your random number is {randint(lower,upper)}')
     @commands.command(aliases=['privatebattle'])
     async def pb(self,ctx,gearType='pure',*,players):
+        '''Generates a random PB for you
+
+Gear Types: As with [p]gear - 'pure', 'triad', or 'random'. See [p]help gear for more
+
+Players: A pipe (|) separated list of players.
+
+This will automatically roll the map, mode, gear, and teams for your pb.'''
         if gearType not in ['pure','triad','random']:
             await ctx.send('That isn\'t a valid gear type')
             return
