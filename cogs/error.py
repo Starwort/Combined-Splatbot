@@ -7,7 +7,7 @@ import io
 class ErrorCog():
     def __init__(self, bot):
         self.bot = bot
-        self.channel = bot.get_channel(485446051298541568)
+        self.channel = self.bot.get_channel(485446051298541568)
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.errors.CommandNotFound):
