@@ -10,62 +10,79 @@ class OwnerCog:
     # Hidden means it won't show up on the default help.
     @commands.command(name='load', hidden=True)
     @commands.is_owner()
-    async def cog_load(self, ctx, *, cog: str):
+    async def cog_load(self, ctx, *cogs):
         """Command which Loads a Module.
         Remember to use dot path. e.g: cogs.owner"""
-
-        try:
-            self.bot.load_extension(cog)
-        except Exception as e:
-            embed = Embed(colour=Colour(0xff0000))
-            embed.set_author(name="ERROR")
-            embed.add_field(name=type(e).__name__,value=e)
-            await ctx.send(embed=embed)
-        else:
-            embed = Embed(colour=Colour(0x00ff00))
-            embed.set_author(name="SUCCESS")
-            embed.add_field(name="Successfully loaded",value=cog)
-            await ctx.send(embed=embed)
-
+        for cog in cogs:
+            try:
+                self.bot.load_extension(cog)
+            except Exception as e:
+                embed = Embed(colour=Colour(0xff0000))
+                embed.set_author(name="ERROR")
+                embed.add_field(name=type(e).__name__,value=e)
+                await ctx.send(embed=embed)
+            else:
+                embed = Embed(colour=Colour(0x00ff00))
+                embed.set_author(name="SUCCESS")
+                embed.add_field(name="Successfully loaded",value=cog)
+                await ctx.send(embed=embed)
 
     @commands.command(name='unload', hidden=True)
     @commands.is_owner()
-    async def cog_unload(self, ctx, *, cog: str):
+    async def cog_unload(self, ctx, *cogs):
         """Command which Unloads a Module.
         Remember to use dot path. e.g: cogs.owner"""
-
-        try:
-            self.bot.unload_extension(cog)
-        except Exception as e:
-            embed = Embed(colour=Colour(0xff0000))
-            embed.set_author(name="ERROR")
-            embed.add_field(name=type(e).__name__,value=e)
-            await ctx.send(embed=embed)
-        else:
-            embed = Embed(colour=Colour(0x00ff00))
-            embed.set_author(name="SUCCESS")
-            embed.add_field(name="Successfully unloaded",value=cog)
-            await ctx.send(embed=embed)
+        for cog in cogs:
+            try:
+                self.bot.unload_extension(cog)
+            except Exception as e:
+                embed = Embed(colour=Colour(0xff0000))
+                embed.set_author(name="ERROR")
+                embed.add_field(name=type(e).__name__,value=e)
+                await ctx.send(embed=embed)
+            else:
+                embed = Embed(colour=Colour(0x00ff00))
+                embed.set_author(name="SUCCESS")
+                embed.add_field(name="Successfully unloaded",value=cog)
+                await ctx.send(embed=embed)
 
     @commands.command(name='reload', hidden=True)
     @commands.is_owner()
-    async def cog_reload(self, ctx, *, cog: str):
+    async def cog_reload(self, ctx, *cogs):
         """Command which Reloads a Module.
         Remember to use dot path. e.g: cogs.owner"""
-
-        try:
-            self.bot.unload_extension(cog)
-            self.bot.load_extension(cog)
-        except Exception as e:
-            embed = Embed(colour=Colour(0xff0000))
-            embed.set_author(name="ERROR")
-            embed.add_field(name=type(e).__name__,value=e)
-            await ctx.send(embed=embed)
-        else:
-            embed = Embed(colour=Colour(0x00ff00))
-            embed.set_author(name="SUCCESS")
-            embed.add_field(name="Successfully reloaded",value=cog)
-            await ctx.send(embed=embed)
+        for cog in cogs:
+            try:
+                try:
+                    self.bot.unload_extension(cog)
+                    self.bot.load_extension(cog)
+                except Exception as e:
+                    if type(e).__name__ == 'ClientException' and str(e) == 'extension does not have a setup function':
+                        mod = imp.import_module(cog)
+                        imp.reload(mod)
+                        embed = Embed(colour=Colour(0x00ff00))
+                        embed.set_author(name="SUCCESS")
+                        embed.add_field(name="Successfully reloaded",value=cog)
+                        await ctx.send(embed=embed)
+                    else:
+                        embed = Embed(colour=Colour(0xff0000))
+                        embed.set_author(name="ERROR")
+                        embed.add_field(name=type(e).__name__,value=e)
+                        await ctx.send(embed=embed)
+                else:
+                    embed = Embed(colour=Colour(0x00ff00))
+                    embed.set_author(name="SUCCESS")
+                    embed.add_field(name="Successfully reloaded",value=cog)
+                    await ctx.send(embed=embed)
+            except Exception as e:
+                trace = traceback.format_exception(type(e), e, e.__traceback__)
+                out = '```'
+                for i in trace:
+                    if len(out+i+'```') > 2000:
+                        await self.channel.send(out+'```')
+                        out = '```'
+                    out += i
+                await self.channel.send(out+'```')
 
     @commands.command(name="stop",hidden=True)
     @commands.is_owner()
@@ -83,7 +100,8 @@ class OwnerCog:
     #@commands.is_owner()
     async def bot_reload(self, ctx):
         async with aiofiles.open('restart.txt','w') as file:
-            await file.write('a')
+            await file.write(f'{ctx.channel.id}\n{ctx.author.id}')
+        await ctx.send('brb')
         await self.bot.logout()
     @commands.command(hidden=True)
     @commands.is_owner()

@@ -1,5 +1,5 @@
 #!/bin/bash
-echo a > restart.txt
+cp template.txt restart.txt
 while [ -f restart.txt ]
 do
     rm restart.txt

@@ -32,11 +32,11 @@ class Random():
         self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
         self.pp = self.lists.map[18]
         self.squid_colours = [ 
-            0xfe447d, # pink
+            0xfe447d, # pink          PB COLOUR
             0xf78f2e, # orange
             0xfedc0c, # yellow orange
             0xd1f20a, # lime green
-            0x5cd05b, # emerald green
+            0x5cd05b, # emerald green PB COLOUR
             0x03c1cd, # teal
             0x0e10e6, # blue
             0x9208e7, # violet
@@ -53,6 +53,8 @@ class Random():
             0xff9600, # neon orange
             0xb21ca1  # dark fuchsia
         ]
+        self.alpha = 0xed1d9a
+        self.bravo = 0x1bb026
     def __unload(self):
         asyncio.get_event_loop().create_task(self.client.close())
     async def get(self,*args, **kwargs):
@@ -219,7 +221,7 @@ class Random():
         for i in range(noScrims):
             out += f'{f"Game #{i+1}: " if noScrims > 1 else ""}{" ".join(scrims[i][1].split(" ")[slice(len(scrims[i][1].split(" "))-1)])} on {" ".join(scrims[i][0].split(" ")[slice(len(scrims[i][0].split(" "))-1)])}\n'
         await ctx.send(content=out.strip())
-    @commands.command(pass_context=True, name="teams", aliases=["generateTeams","pb"])
+    @commands.command(pass_context=True, name="teams", aliases=["generateTeams"])
     async def generateTeams(self, ctx, *, players: str):
         '''Picks random even teams (with necessary spectators) given a pipe (|) separated list of players. e.g.\n[p]teams player a | player b | player c'''
         players = players.split('\\|\\|\\')
@@ -233,7 +235,6 @@ class Random():
             await ctx.send(content="Too many or too few players! (The number of players must fall under `[2,10]` [interval notation])")
             return
         playersPerSide = min(noP // 2, 4)
-        specs = noP - 2 * playersPerSide
         teamA = ["Alpha Team"]
         teamB = ["Bravo Team"]
         spec = []
@@ -348,5 +349,166 @@ Display Types:
     @commands.command()
     async def number(self,ctx,lower:int,upper:int):
         await ctx.send(f'Your random number is {randint(lower,upper)}')
+    @commands.command(aliases=['privatebattle'])
+    async def pb(self,ctx,gearType='pure',*,players):
+        if gearType not in ['pure','triad','random']:
+            await ctx.send('That isn\'t a valid gear type')
+            return
+        displayType = 'emoji'
+        noP = len(players)
+        if noP < 2 or noP > 10:
+            await ctx.send(content="Too many or too few players! (The number of players must fall under `[2,10]` [interval notation])")
+            return
+        playersPerSide = min(noP // 2, 4)
+        for i in range(playersPerSide):
+            tmp = randint(0, noP - 1)
+            teamA.append(players.pop(tmp).strip())
+            noP -= 1
+        for i in range(playersPerSide):
+            tmp = randint(0, noP - 1)
+            teamB.append(players.pop(tmp).strip())
+            noP -= 1
+        pb = {'alpha':{},'bravo':{},'spec':players}
+        for player in teamA:
+            shuffle(self.lists.weapon)
+            weapon = choice(self.lists.weapon)
+            weapon = weapon.split(" ")
+            wname = " ".join(weapon[slice(len(weapon)-1)])
+            async with aiofiles.open("wdist") as distfile:
+                dist = literal_eval(await distfile.read())
+            dist[wname] = dist.get(wname, 0) + 1
+            async with aiofiles.open("wdist", "w") as distfile:
+                await distfile.write(repr(dist))
+            if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
+                shuffle(self.trollweps)
+                weapon = choice(self.trollweps)
+                weapon = weapon.split(" ")
+                wname = " ".join(weapon[slice(len(weapon)-1)])
+            gear = {
+                'head': {
+                    'main': None,
+                    'sub1': None,
+                    'sub2': None,
+                    'sub3': None
+                },
+                'body': {
+                    'main': None,
+                    'sub1': None,
+                    'sub2': None,
+                    'sub3': None
+                },
+                'shoe': {
+                    'main': None,
+                    'sub1': None,
+                    'sub2': None,
+                    'sub3': None
+                },
+                'weapon': wname
+            }
+            if gearType == 'pure':
+                for i in gear.keys():
+                    ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
+                    for j in gear[i].keys():
+                        gear[i][j] = ab
+            elif gearType == 'triad':
+                for i in gear.keys():
+                    gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
+                    ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
+                    gear[i]['sub1'] = ab
+                    gear[i]['sub2'] = ab
+                    gear[i]['sub3'] = ab
+            elif gearType == 'random':
+                for i in gear.keys():
+                    gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
+                    for j in range(3):
+                        gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
+            pb['alpha'][player] = gear
+        for player in teamB:
+            shuffle(self.lists.weapon)
+            weapon = choice(self.lists.weapon)
+            weapon = weapon.split(" ")
+            wname = " ".join(weapon[slice(len(weapon)-1)])
+            async with aiofiles.open("wdist") as distfile:
+                dist = literal_eval(await distfile.read())
+            dist[wname] = dist.get(wname, 0) + 1
+            async with aiofiles.open("wdist", "w") as distfile:
+                await distfile.write(repr(dist))
+            if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
+                shuffle(self.trollweps)
+                weapon = choice(self.trollweps)
+                weapon = weapon.split(" ")
+                wname = " ".join(weapon[slice(len(weapon)-1)])
+            gear = {
+                'head': {
+                    'main': None,
+                    'sub1': None,
+                    'sub2': None,
+                    'sub3': None
+                },
+                'body': {
+                    'main': None,
+                    'sub1': None,
+                    'sub2': None,
+                    'sub3': None
+                },
+                'shoe': {
+                    'main': None,
+                    'sub1': None,
+                    'sub2': None,
+                    'sub3': None
+                },
+                'weapon': wname
+            }
+            if gearType == 'pure':
+                for i in gear.keys():
+                    ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
+                    for j in gear[i].keys():
+                        gear[i][j] = ab
+            elif gearType == 'triad':
+                for i in gear.keys():
+                    gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
+                    ab = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
+                    gear[i]['sub1'] = ab
+                    gear[i]['sub2'] = ab
+                    gear[i]['sub3'] = ab
+            elif gearType == 'random':
+                for i in gear.keys():
+                    gear[i]['main'] = self.lists.ability[i][choice(list(self.lists.ability[i].keys()))]
+                    for j in range(3):
+                        gear[i][f'sub{j+1}'] = self.lists.ability['all'][choice(list(self.lists.ability['all'].keys()))]
+            pb['bravo'][player] = gear
+        format = '{main[1]} {sub1[1]}{sub2[1]}{sub3[1]}'
+        shuffle(self.lists.map)
+        map = choice(self.lists.map).split(' ')
+        shuffle(self.lists.mode)
+        mode = choice(self.lists.mode).split(' ')
+        map.pop()
+        mode.pop()
+        map = ' '.join(map)
+        mode = ' '.join(mode)
+        embeds = {}
+        shuffle(self.squid_colours)
+        embeds['meta'] = Embed(colour=choice(self.squid_colours),title='Private Battle Settings')
+        embeds['alpha'] = Embed(colour=self.alpha,title='Alpha Team')
+        embeds['bravo'] = Embed(colour=choice(self.squid_colours),title='Bravo Team')
+        embeds['spec'] = Embed(title='Spectating')
+        for team in ['alpha','bravo']:
+            for player in pb[team]:
+                playerinfo = pb[team][player]
+                gearstr = f'Weapon:\n{weapon}\nGear:'
+                for gear in ['head','body','shoe']:
+                    gearstr += '\n' + format.format(**playerinfo[gear])
+                embeds[team].add_field(name=f'`{player}` uses:', value=gearstr)
+        embeds['meta'].add_field(name='Map',value=map)
+        embeds['meta'].add_field(name='Mode',value=mode)
+        for i in pb['spec']:
+            embeds['spec'].add_field(name=i,value='\u200b')
+        if not pb['spec']:
+            del embeds['spec']
+        for i in ['meta','alpha','bravo','spec']:
+            try:
+                await ctx.send(embed=embeds[i])
+            except:
+                pass
 def setup(bot):
     bot.add_cog(Random(bot))
