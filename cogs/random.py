@@ -354,12 +354,13 @@ Display Types:
         if gearType not in ['pure','triad','random']:
             await ctx.send('That isn\'t a valid gear type')
             return
-        displayType = 'emoji'
+        players = players.split('|')
         noP = len(players)
         if noP < 2 or noP > 10:
             await ctx.send(content="Too many or too few players! (The number of players must fall under `[2,10]` [interval notation])")
             return
         playersPerSide = min(noP // 2, 4)
+        teamA, teamB = [], []
         for i in range(playersPerSide):
             tmp = randint(0, noP - 1)
             teamA.append(players.pop(tmp).strip())
