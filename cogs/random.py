@@ -380,11 +380,6 @@ Display Types:
             dist[wname] = dist.get(wname, 0) + 1
             async with aiofiles.open("wdist", "w") as distfile:
                 await distfile.write(repr(dist))
-            if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
-                shuffle(self.trollweps)
-                weapon = choice(self.trollweps)
-                weapon = weapon.split(" ")
-                wname = " ".join(weapon[slice(len(weapon)-1)])
             gear = {
                 'head': {
                     'main': None,
@@ -440,11 +435,6 @@ Display Types:
             dist[wname] = dist.get(wname, 0) + 1
             async with aiofiles.open("wdist", "w") as distfile:
                 await distfile.write(repr(dist))
-            if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
-                shuffle(self.trollweps)
-                weapon = choice(self.trollweps)
-                weapon = weapon.split(" ")
-                wname = " ".join(weapon[slice(len(weapon)-1)])
             gear = {
                 'head': {
                     'main': None,
@@ -508,14 +498,13 @@ Display Types:
         for team in ['alpha','bravo']:
             for player in pb[team]:
                 playerinfo = pb[team][player]
-                gearstr = f'Weapon:\n{weapon}\nGear:'
+                gearstr = f'Weapon:\n{playerinfo["weapon"]}\nGear:'
                 for gear in ['head','body','shoe']:
                     gearstr += '\n' + format.format(**playerinfo[gear])
                 embeds[team].add_field(name=f'`{player}` uses:', value=gearstr)
         embeds['meta'].add_field(name='Map',value=map)
         embeds['meta'].add_field(name='Mode',value=mode)
-        for i in pb['spec']:
-            embeds['spec'].add_field(name=i,value='\u200b')
+        embeds['spec'].description = '\n'.join(pb['spec'])
         if not pb['spec']:
             del embeds['spec']
         for i in ['meta','alpha','bravo','spec']:
