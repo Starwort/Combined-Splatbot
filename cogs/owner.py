@@ -2,11 +2,13 @@ from discord.ext import commands
 from discord import *
 from subprocess import run, PIPE
 import aiofiles
-import importlib, traceback
+import importlib as imp, traceback
 class OwnerCog:
 
     def __init__(self, bot):
         self.bot = bot
+        self.channel = self.bot.get_channel(485446051298541568)
+
     
     # Hidden means it won't show up on the default help.
     @commands.command(name='load', hidden=True)
