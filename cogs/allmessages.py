@@ -81,3 +81,5 @@ If problems persist, join the support server: `3xuDR3G`'''.format(missing_req, m
                 except:
                     pass
             await self.bot.process_commands(message)
+def setup(bot):
+    bot.add_cog(AllMessages(bot))
