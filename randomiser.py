@@ -45,6 +45,12 @@ async def on_ready():
     t = time.time()
     bot.startuptime = time.strftime("(UTC) %H:%M:%S on %d/%m/%Y", time.gmtime(t))
     await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,pre,len(bot.guilds))))
+    for extension in [f.replace('.py', '') for f in listdir(cogs_dir) if isfile(join(cogs_dir, f))]:
+        try:
+            bot.load_extension(cogs_dir + "." + extension)
+        except (ClientException, ModuleNotFoundError):
+            print(f'Failed to load extension {extension}.')
+            traceback.print_exc()
     try:
         async with aiofiles.open('restart.txt') as file:
             data = await file.read()
@@ -62,10 +68,4 @@ async def on_guild_join(guild):
 async def on_guild_remove(guild):
     await bot.change_presence(activity=Game(name="Doing all sorts of stuff in {2} guilds since {0}\nPrefix: {1}".format(bot.startuptime,pre,len(bot.guilds))))
 if __name__ == '__main__':
-    for extension in [f.replace('.py', '') for f in listdir(cogs_dir) if isfile(join(cogs_dir, f))]:
-        try:
-            bot.load_extension(cogs_dir + "." + extension)
-        except (ClientException, ModuleNotFoundError):
-            print(f'Failed to load extension {extension}.')
-            traceback.print_exc()
     bot.run(token, bot=True, reconnect=True)
