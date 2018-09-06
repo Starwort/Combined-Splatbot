@@ -60,27 +60,65 @@ class Help(formatter.HelpFormatter):
     async def send(self, dest, content=None, embeds=None):
         if len(embeds) == 1:
             embed = embeds[0]
-            embed.set_author(name='Combined Splatbot Help Manual', icon_url=self.avatar)
-            return await dest.send(content=content, embed=embed)
-
-        help_msg = await dest.send(content=content, embed=embeds[0])
-        page_msg = await dest.send("There are {} help pages. Send a number to see the corresponding page. Send any other message to exit.".format(len(embeds)))
-        def is_not_me(msg):
-            if msg.author != self.context.me and msg.channel == dest:
-                return True
-        while True:
-            await asyncio.sleep(.5)
-            reply = await self.bot.wait_for('message', check=is_not_me)
+            embed.set_author(name='Combined Splatbot Help Manual',icon_url=self.bot.user.avatar_url)
+            await dest.send(embed=embed)
+            return
+        help_msg = await dest.send(embed = embeds[0])
+        if dest.permissions_for(self.context.me).value & 65600 == 65600 or dest.permissions_for(self.context.me).value & 8 == 8:
+            home, back, forward, end = '⏮', '◀', '▶', '⏭'
+            stop = '⏹'
+            valid_r = [home,back,forward,end,stop]
+            page = 0
+            max_page = len(embeds)
+            for i in valid_r:
+                await help_msg.add_reaction(i)
+            await asyncio.sleep(0.1)
+            def check(reaction,user):
+                return reaction.emoji in valid_r and reaction.message.id == help_msg.id
             try:
-                page_number = int(reply.content) - 1
-                if page_number < 0:
-                    page_number = 0
-                elif page_number >= len(embeds):
-                    page_number = len(embeds)-1
-                await help_msg.edit(content=content, embed=embeds[page_number])
-            except ValueError:
-                await page_msg.edit(content="Quit Help menu.")
-                break
+                while True:
+                    reaction, user = await self.bot.wait_for('reaction_add',check=check,timeout=120)
+                    try:
+                        await help_msg.remove_reaction(reaction, user)
+                    except:
+                        pass
+                    if reaction.emoji == home:
+                        page = 0
+                    elif reaction.emoji == back:
+                        page -= 1
+                    elif reaction.emoji == forward:
+                        page += 1
+                    elif reaction.emoji == end:
+                        page = max_page - 1
+                    elif reaction.emoji == stop:
+                        break
+                    
+                    page %= max_page
+                    await help_msg.edit(embed=embeds[page])
+            except:
+                pass
+            await help_msg.delete()
+        else:
+            page_msg = await dest.send('There are {} help pages. Send a number to see the corresponding page. Send any other message to exit.'.format(len(embeds)))
+            def is_not_me(msg):
+                if msg.author.id != self.bot.user.id and msg.channel == dest.channel:
+                    return True
+            while True:
+                reply = await self.bot.wait_for('message', check=is_not_me)
+                try:
+                    page_number = int(reply.content) - 1
+                    if page_number < 0:
+                        page_number = 0
+                    elif page_number >= len(embeds):
+                        page_number = len(embeds)-1
+                    await help_msg.edit(embed=embeds[page_number])
+                    try:
+                        await reply.delete()
+                    except:
+                        pass
+                except ValueError:
+                    await page_msg.edit(content='Quit help menu.')
+                    break
 
 
     @property
@@ -250,7 +288,7 @@ class Help(formatter.HelpFormatter):
 
         embeds = []
         embed = discord.Embed(colour=self.colour, **emb['embed'])
-        embed.set_author(name='Spyke Help Manual Page 1', icon_url=self.avatar)
+        embed.set_author(name='Combined Splatbot Help Manual Page 1', icon_url=self.avatar)
         embed.set_footer(**emb['footer'])
         txt = ""
         for field in emb['fields']:
@@ -260,7 +298,7 @@ class Help(formatter.HelpFormatter):
                 txt = field["name"] + field["value"]
                 del embed
                 embed = discord.Embed(colour=self.colour, **emb['embed'])
-                embed.set_author(name='Spyke Help Manual Page {}'.format(len(embeds)+1), icon_url=self.avatar)
+                embed.set_author(name='Combined Splatbot Help Manual Page {}'.format(len(embeds)+1), icon_url=self.avatar)
                 embed.set_footer(**emb['footer'])
             embed.add_field(**field)
         embeds.append(embed)
