@@ -208,7 +208,7 @@ Paraglider'''.split('\n')
     async def invite(self, ctx):
         '''Link to invite the bot'''
         shuffle(self.yoshi_colours)
-        embed = Embed(description="To invite the bot to your server, click [here](https://discordapp.com/api/oauth2/authorize?client_id=424540163579052043&permissions=2048&scope=bot)", colour=Colour(choice(self.yoshi_colours)), timestamp=datetime.datetime.now())
+        embed = Embed(description="To invite the bot to your server, click [here](https://discordapp.com/oauth2/authorize?client_id=424540163579052043&scope=bot&permissions=122944)", colour=Colour(choice(self.yoshi_colours)), timestamp=datetime.datetime.now())
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)))
         await ctx.send(embed=embed)
     @commands.command(pass_context=True, aliases=["suggestion"])
