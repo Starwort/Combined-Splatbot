@@ -58,7 +58,7 @@ class Miscellaneous():
     @commands.command(pass_context=True)
     async def invite(self, ctx):
         '''Link to invite the bot'''
-        embed = Embed(description="To invite the bot to your server, click [here](https://discordapp.com/api/oauth2/authorize?client_id=424540163579052043&permissions=2048&scope=bot)", colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
+        embed = Embed(description="To invite the bot to your server, click [here](https://discordapp.com/oauth2/authorize?client_id=424540163579052043&scope=bot&permissions=122944)", colour=Colour(eval("0x{0}".format("".join([choice("0123456789abcdef") for i in range(6)])))), timestamp=datetime.datetime.now())
         embed.set_footer(text="Requested by {0}".format(str(ctx.author)))
         await ctx.send(embed=embed)
     @commands.command(pass_context=True, aliases=["suggestion"])
