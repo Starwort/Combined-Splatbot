@@ -109,7 +109,7 @@ class Debugger:
                 await ctx.send("```\n```")
 
     @commands.command(pass_context=True, hidden=True)
-    @comands.is_owner()
+    @commands.is_owner()
     async def debug(self, ctx, *, option: str = None):
         """Shows useful informations to people that try to help you."""
         try:
@@ -172,7 +172,7 @@ class Debugger:
             await ctx.send('``` %s ```'%format_exc())
 
     @commands.group(pass_context=True, invoke_without_command=True, hidden=True)
-    @comands.is_owner()
+    @commands.is_owner()
     async def py(self, ctx, *, msg):
         """Python interpreter."""
 
@@ -314,7 +314,7 @@ class Debugger:
             await ctx.send('Error, something went wrong: ``%s``' % e)
 
     @commands.command(pass_context=True, hidden=True)
-    @comands.is_owner()
+    @commands.is_owner()
     async def load_module(self, ctx, *, msg):
         """Load a module."""
         await ctx.message.delete()
@@ -332,7 +332,7 @@ class Debugger:
             await ctx.send('Loaded module: `{}.py`'.format(msg))
 
     @commands.command(pass_context=True, hidden=True)
-    @comands.is_owner()
+    @commands.is_owner()
     async def unload_module(self, ctx, *, msg):
         """Unload a module"""
         await ctx.message.delete()
@@ -350,7 +350,7 @@ class Debugger:
             await ctx.send('Unloaded module: `{}.py`'.format(msg))
 
     @commands.command(pass_context=True, hidden=True)
-    @comands.is_owner()
+    @commands.is_owner()
     async def loadall(self, ctx):
         """Loads all core modules"""
         await ctx.message.delete()
@@ -368,7 +368,7 @@ class Debugger:
             await ctx.send(errors)            
             
     @commands.command(pass_context=True, hidden=True)
-    @comands.is_owner()
+    @commands.is_owner()
     async def redirect(self, ctx):
         """Redirect STDOUT and STDERR to a channel for debugging purposes."""
         sys.stdout = self.stream
@@ -377,7 +377,7 @@ class Debugger:
         await ctx.send("Successfully redirected STDOUT and STDERR to the current channel!")
 
     @commands.command(pass_context=True, hidden=True)
-    @comands.is_owner()
+    @commands.is_owner()
     async def unredirect(self, ctx):
         """Redirect STDOUT and STDERR back to the console for debugging purposes."""
         sys.stdout = sys.__stdout__
