@@ -10,7 +10,6 @@ import textwrap
 from discord.ext import commands
 from io import StringIO
 from traceback import format_exc
-import cogs.lib.checks as checks 
 from contextlib import redirect_stdout
 import aiohttp
 # Common imports that can be used by the debugger.
