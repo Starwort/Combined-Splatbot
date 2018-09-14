@@ -76,24 +76,28 @@ class WeaponInfo():
         '''
         This command gets you weapon info.
         '''
-        match = process.extractOne(weapon,self.matchlist,scorer=fuzz.token_set_ratio)
-        if match[1] < 75:
-            await ctx.send(f"That does not appear to be a weapon! The best match, {match[0]} was <75% ({match[1]}%)")
-            return
-        matchAcc = match[1]
-        match = match[0]
+        if weapon.lower() != 'blobblobabbalab':
+            match = process.extractOne(weapon,self.matchlist,scorer=fuzz.token_set_ratio)
+            if match[1] < 75:
+                await ctx.send(f"That does not appear to be a weapon! The best match, {match[0]} was <75% ({match[1]}%)")
+                return
+            matchAcc = match[1]
+            match = match[0]
+        else:
+            matchAcc = 100
+            match = 'Bloblobber'
         index = self.indexes[match]
         data = self.list[index]
         wdata = data[2:]
         wproto = self.prototypes[self.protoindexes[wdata[0]]]
         shuffle(self.squid_colours)
-        embed=Embed(title="Weapon Info", description=f"Info for weapon {match} (Search: {weapon})", colour=Colour(choice(self.squid_colours)))
+        embed=Embed(title="Weapon Info", description=f"Info for weapon {match} (Search: `{weapon}` @ {matchAcc}%)", colour=Colour(choice(self.squid_colours)))
         embed.set_thumbnail(url=data[1])
         embed.add_field(name="Type:", value=wdata[0], inline=False)
         embed.add_field(name=wproto[1], value=wdata[1], inline=True)
         embed.add_field(name=wproto[2], value=wdata[2], inline=True)
         embed.add_field(name=wproto[3], value=wdata[3], inline=True)
-        embed.add_field(name=wproto[4], value=wdata[4], inline=True)
+        embed.add_field(name=wproto[4], value=f'<:coin:483225291188338689> {wdata[4]}', inline=True)
         embed.add_field(name=wproto[5], value=f"{wdata[5]}%", inline=True)
         embed.add_field(name=wproto[6], value=f"{wdata[6]}%", inline=True)
         embed.add_field(name=wproto[7], value=f"{wdata[7]}p", inline=False)
