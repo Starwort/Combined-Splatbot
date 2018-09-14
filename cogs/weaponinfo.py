@@ -6,7 +6,7 @@ from discord import *
 from discord.ext import commands
 from random import choice, shuffle
 import datetime
-from fuzzywuzzy import process
+from fuzzywuzzy import process, fuzz
 import asyncio, aiohttp, aiofiles
 import sys
 import os
