@@ -76,7 +76,7 @@ class WeaponInfo():
         '''
         This command gets you weapon info.
         '''
-        match = process.extractOne(weapon,self.matchlist)
+        match = process.extractOne(weapon,self.matchlist,scorer=fuzz.token_sort_ratio)
         if match[1] < 75:
             await ctx.send(f"That does not appear to be a weapon! The best match, {match[0]} was <75% ({match[1]}%)")
             return
