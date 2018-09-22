@@ -3,8 +3,9 @@ from discord.ext import commands
 import aiohttp,asyncio,aiofiles
 from ast import literal_eval
 from random import choice,shuffle,randint
+from fuzzywuzzy import process
 import datetime
-class Random():
+class SplatCommands():
     def __init__(self,bot):
         class Bunch():
             def __init__(self, **kwds):
@@ -18,9 +19,9 @@ class Random():
         tmp = open("mode_list.txt")
         self.lists.mode = [i.strip() for i in tmp.readlines()]
         tmp.close()
-        tmp = open("weapon_list.txt")
+        """ tmp = open("weapon_list.txt")
         self.lists.weapon = [i.strip() for i in tmp.readlines()]
-        tmp.close()
+        tmp.close() """
         tmp = open('ability_list.txt')
         self.lists.ability = literal_eval(tmp.read())
         tmp.close()
@@ -29,7 +30,7 @@ class Random():
         self.rain = self.lists.mode[2]
         self.zones = self.lists.mode[3]
         self.clam = self.lists.mode[4]
-        self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
+        #self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
         self.pp = self.lists.map[18]
         self.squid_colours = [ 
             0xfe447d, # pink          PB COLOUR
@@ -55,8 +56,77 @@ class Random():
         ]
         self.alpha = 0xed1d9a
         self.bravo = 0x1bb026
+        with open("weapon_info.txt") as tmp:
+            self.list = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
+        with open("prototypes.txt") as tmp:
+            self.prototypes = [[j.strip() for j in i.split("|")] for i in tmp.readlines()]
+        self.matchlist = [i[0] for i in self.list]
+        self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
+        self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
+        self.lists.weapon = [(i[0],i[1]) for i in  self.list]
     def __unload(self):
         asyncio.get_event_loop().create_task(self.client.close())
+    async def get(self,*args, **kwargs):
+        response = await self.client.request('GET', *args, **kwargs)
+        return await response.read()
+    async def download(self,url, name):
+        content = await self.get(url)
+        async with aiofiles.open(name,'wb') as file:
+            await file.write(content)
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def updatelists(self,ctx):
+        await ctx.send('Updating `weapon_info.txt`...')
+        await self.download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
+        await ctx.send('Done!\nUpdating `prototypes.txt`...')
+        await self.download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
+        await ctx.send('Done!')
+        await ctx.send('Resetting the internal list cache...\n`weapon_info.txt`...')
+        async with aiofiles.open("weapon_info.txt") as tmp:
+            self.list = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
+        await ctx.send('Done!\n`prototypes.txt`...')
+        async with aiofiles.open("prototypes.txt") as tmp:
+            self.prototypes = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
+        await ctx.send('Done!\nSetting inherited variables...')
+        self.matchlist = [i[0] for i in self.list]
+        self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
+        self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
+        await ctx.send('Done!')
+    @commands.command(pass_context=True,aliases=["info", "winfo"])
+    async def weaponinfo(self,ctx,*,weapon):
+        '''
+        This command gets you weapon info.
+        '''
+        if weapon.lower() != 'blobblobabbalab':
+            match = process.extractOne(weapon.replace('carbon','carbon roller').replace('roller roller','roller'),self.matchlist)
+            if match[1] < 75:
+                await ctx.send(f"That does not appear to be a weapon! The best match, {match[0]} was <75% ({match[1]}%)")
+                return
+            matchAcc = match[1]
+            match = match[0]
+        else:
+            matchAcc = 100
+            match = 'Bloblobber'
+        index = self.indexes[match]
+        data = self.list[index]
+        wdata = data[2:]
+        wproto = self.prototypes[self.protoindexes[wdata[0]]]
+        shuffle(self.squid_colours)
+        embed=Embed(title="Weapon Info", description=f"Info for weapon {match} (Search: `{weapon}` @ {matchAcc}%)", colour=Colour(choice(self.squid_colours)))
+        embed.set_thumbnail(url=data[1])
+        embed.add_field(name="Type:", value=wdata[0], inline=False)
+        embed.add_field(name=wproto[1], value=wdata[1], inline=True)
+        embed.add_field(name=wproto[2], value=wdata[2], inline=True)
+        embed.add_field(name=wproto[3], value=wdata[3], inline=True)
+        embed.add_field(name=wproto[4], value=f'<:coin:483225291188338689> {wdata[4]}', inline=True)
+        embed.add_field(name=wproto[5], value=f"{wdata[5]}%", inline=True)
+        embed.add_field(name=wproto[6], value=f"{wdata[6]}%", inline=True)
+        embed.add_field(name=wproto[7], value=f"{wdata[7]}p", inline=False)
+        embed.add_field(name=wproto[8], value=(round(int(wdata[8])/10))*u"\u2588" + (10 - (round(int(wdata[8])/10)))*u"\u2591" + f" ({wdata[8]}/100)", inline=True)
+        embed.add_field(name=wproto[9], value=(round(int(wdata[9])/10))*u"\u2588" + (10 - (round(int(wdata[9])/10)))*u"\u2591" + f" ({wdata[9]}/100)", inline=True)
+        embed.add_field(name=wproto[10], value=(round(int(wdata[10])/10))*u"\u2588" + (10 - (round(int(wdata[10])/10)))*u"\u2591" + f" ({wdata[10]}/100)", inline=True)
+        embed.set_footer(text=f"Requested by {str(ctx.author)}")
+        await ctx.send(embed=embed)
     async def get(self,*args, **kwargs):
         response = await self.client.request('GET', *args, **kwargs)
         return await response.read()
@@ -73,9 +143,9 @@ class Random():
         out += '\nDone!\nUpdating `map_list.txt`...'
         await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/mode_list.txt","mode_list.txt")
-        out += '\nDone!\nUpdating `weapon_list.txt`...'
+        """ out += '\nDone!\nUpdating `weapon_list.txt`...'
         await msg.edit(content=out)
-        await self.download("http://starbright.dyndns.org/starwort/weapon_list.txt","weapon_list.txt")
+        await self.download("http://starbright.dyndns.org/starwort/weapon_list.txt","weapon_list.txt") """
         out += '\nDone!\nUpdating `ability_list.txt`...'
         await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/ability_list.txt","ability_list.txt")
@@ -87,10 +157,10 @@ class Random():
         await msg.edit(content=out)
         async with aiofiles.open("mode_list.txt") as tmp:
             self.lists.mode = [i.strip() for i in await tmp.readlines()]  
-        out += '\nDone!\n`weapon_list.txt`...'
+        """ out += '\nDone!\n`weapon_list.txt`...'
         await msg.edit(content=out)
         async with aiofiles.open("weapon_list.txt") as tmp:
-            self.lists.weapon = [i.strip() for i in await tmp.readlines()]  
+            self.lists.weapon = [i.strip() for i in await tmp.readlines()] """
         out += '\nDone!\n`ability_list.txt`...'
         await msg.edit(content=out)
         async with aiofiles.open("ability_list.txt") as tmp:
@@ -102,7 +172,7 @@ class Random():
         self.rain = self.lists.mode[2]
         self.zones = self.lists.mode[3]
         self.clam = self.lists.mode[4]
-        self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
+        #self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
         self.pp = self.lists.map[18]
         out += '\nDone!'
         await msg.edit(content=out)
@@ -166,19 +236,18 @@ class Random():
         '''Randomly select a weapon'''
         shuffle(self.lists.weapon)
         weapon = choice(self.lists.weapon)
-        weapon = weapon.split(" ")
-        wname = " ".join(weapon[slice(len(weapon)-1)])
+        wname = weapon[0]
         async with aiofiles.open("wdist") as distfile:
             dist = literal_eval(await distfile.read())
         dist[wname] = dist.get(wname, 0) + 1
         async with aiofiles.open("wdist", "w") as distfile:
             await distfile.write(repr(dist))
-        if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
-            shuffle(self.trollweps)
-            weapon = choice(self.trollweps)
-            weapon = weapon.split(" ")
-            wname = " ".join(weapon[slice(len(weapon)-1)])
-        wurl = weapon[-1]
+        #if hash(ctx.author.id) in [0x4e6dd1e0484001c]:
+        #    shuffle(self.trollweps)
+        #    weapon = choice(self.trollweps)
+        #    weapon = weapon.split(" ")
+        #    wname = " ".join(weapon[slice(len(weapon)-1)])
+        wurl = weapon[1]
         url = ctx.author.avatar_url
         avatar = ctx.author.default_avatar_url if url == "" else url
         shuffle(self.squid_colours)
@@ -351,13 +420,13 @@ Display Types:
         await ctx.send(f'Your random number is {randint(lower,upper)}')
     @commands.command(aliases=['privatebattle'])
     async def pb(self,ctx,gearType='pure',*,players):
-        '''Generates a random PB for you
+        '''Generates a random PB for you. (This is an amalgamation of [p]gear, [p]map, [p]mode, [p]teams, and [p]weapon)
 
 Gear Types: As with [p]gear - 'pure', 'triad', or 'random'. See [p]help gear for more
 
 Players: A pipe (|) separated list of players.
 
-This will automatically roll the map, mode, gear, and teams for your pb.'''
+This will automatically roll the map, mode, gear, weapons, and teams for your pb.'''
         if gearType not in ['pure','triad','random']:
             await ctx.send('That isn\'t a valid gear type')
             return
@@ -380,8 +449,7 @@ This will automatically roll the map, mode, gear, and teams for your pb.'''
         for player in teamA:
             shuffle(self.lists.weapon)
             weapon = choice(self.lists.weapon)
-            weapon = weapon.split(" ")
-            wname = " ".join(weapon[slice(len(weapon)-1)])
+            wname = weapon[0]
             async with aiofiles.open("wdist") as distfile:
                 dist = literal_eval(await distfile.read())
             dist[wname] = dist.get(wname, 0) + 1
@@ -435,8 +503,7 @@ This will automatically roll the map, mode, gear, and teams for your pb.'''
         for player in teamB:
             shuffle(self.lists.weapon)
             weapon = choice(self.lists.weapon)
-            weapon = weapon.split(" ")
-            wname = " ".join(weapon[slice(len(weapon)-1)])
+            wname = weapon[0]
             async with aiofiles.open("wdist") as distfile:
                 dist = literal_eval(await distfile.read())
             dist[wname] = dist.get(wname, 0) + 1
@@ -520,4 +587,4 @@ This will automatically roll the map, mode, gear, and teams for your pb.'''
             except:
                 pass
 def setup(bot):
-    bot.add_cog(Random(bot))
+    bot.add_cog(SplatCommands(bot))
