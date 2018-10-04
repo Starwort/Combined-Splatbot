@@ -336,7 +336,7 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
         embed.add_field(name="Battle Course Chosen:", value=wname)
         await ctx.send(embed=embed)
     @commands.command(aliases=['didthanoskillme','didthanoskill.me','didthanoskillme?','amidead','amidead?','didthanoskill'])
-    async def thanos(self,ctx,target:discord.Member=None):
+    async def thanos(self,ctx,target:Member=None):
         '''Did Thanos kill you?'''
         if not target: target = ctx.author
         await ctx.send(f'Thanos {"killed" if ((not bool(target.id % 2)) or (HypeSquadHouse["balance"] not in target.hypesquad_houses)) else "spared"} you')
