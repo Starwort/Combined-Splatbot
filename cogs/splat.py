@@ -73,25 +73,6 @@ class SplatCommands():
         content = await self.get(url)
         async with aiofiles.open(name,'wb') as file:
             await file.write(content)
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def updatelists(self,ctx):
-        await ctx.send('Updating `weapon_info.txt`...')
-        await self.download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
-        await ctx.send('Done!\nUpdating `prototypes.txt`...')
-        await self.download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
-        await ctx.send('Done!')
-        await ctx.send('Resetting the internal list cache...\n`weapon_info.txt`...')
-        async with aiofiles.open("weapon_info.txt") as tmp:
-            self.list = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
-        await ctx.send('Done!\n`prototypes.txt`...')
-        async with aiofiles.open("prototypes.txt") as tmp:
-            self.prototypes = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
-        await ctx.send('Done!\nSetting inherited variables...')
-        self.matchlist = [i[0] for i in self.list]
-        self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
-        self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
-        await ctx.send('Done!')
     @commands.command(pass_context=True,aliases=["info", "winfo"])
     async def weaponinfo(self,ctx,*,weapon):
         '''
@@ -136,11 +117,11 @@ class SplatCommands():
             await file.write(content)
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def updaterandom(self,ctx):
+    async def updatelists(self,ctx):
         out = 'Updating `map_list.txt`...'
         msg = await ctx.send(content=out)
         await self.download("http://starbright.dyndns.org/starwort/map_list.txt","map_list.txt")
-        out += '\nDone!\nUpdating `map_list.txt`...'
+        out += '\nDone!\nUpdating `mode_list.txt`...'
         await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/mode_list.txt","mode_list.txt")
         """ out += '\nDone!\nUpdating `weapon_list.txt`...'
@@ -149,6 +130,12 @@ class SplatCommands():
         out += '\nDone!\nUpdating `ability_list.txt`...'
         await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/ability_list.txt","ability_list.txt")
+        out += '\nDone!\nUpdating `weapon_info.txt`...'
+        await msg.edit(content=out)
+        await self.download("http://starbright.dyndns.org/starwort/weapon_info.txt","weapon_info.txt")
+        out += '\nDone!\nUpdating `prototypes.txt`...'
+        await msg.edit(content=out)
+        await self.download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
         out += '\nDone!\nResetting the internal list cache...\n`map_list.txt`...'
         await msg.edit(content=out)
         async with aiofiles.open("map_list.txt") as tmp:
@@ -165,6 +152,14 @@ class SplatCommands():
         await msg.edit(content=out)
         async with aiofiles.open("ability_list.txt") as tmp:
             self.lists.ability = literal_eval(await tmp.read()) 
+        out += '\nDone!\n`weapon_info.txt`...'
+        await msg.edit(content=out)
+        async with aiofiles.open("weapon_info.txt") as tmp:
+            self.list = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
+        out += '\nDone!\n`prototypes.txt`...'
+        await msg.edit(content=out)
+        async with aiofiles.open("prototypes.txt") as tmp:
+            self.prototypes = [[j.strip() for j in i.split("|")] for i in await tmp.readlines()]
         out += '\nDone!\nResetting inherited properties...'
         await msg.edit(content=out)
         self.turf = self.lists.mode[0]
@@ -174,6 +169,9 @@ class SplatCommands():
         self.clam = self.lists.mode[4]
         #self.trollweps = [self.lists.weapon[i] for i in [8,9,10,15,16,17,32,33,34,35,66,73]]
         self.pp = self.lists.map[18]
+        self.matchlist = [i[0] for i in self.list]
+        self.indexes = dict([(self.list[i][0],i) for i in range(len(self.list))])
+        self.protoindexes = dict([(self.prototypes[i][0],i) for i in range(len(self.prototypes))])
         out += '\nDone!'
         await msg.edit(content=out)
     @commands.command(pass_context=True,aliases=['stage'])
