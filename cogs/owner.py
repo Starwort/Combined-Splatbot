@@ -16,9 +16,6 @@ class OwnerCog:
     async def cog_load(self, ctx, *cogs):
         """Command which Loads a Module.
         Remember to use dot path. e.g: cogs.owner"""
-        async def cog_load(self, ctx, *cogs):
-        """Command which Loads a Module.
-        Remember to use dot path. e.g: cogs.owner"""
         for cog in cogs:
             try:
                 try:
