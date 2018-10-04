@@ -339,6 +339,6 @@ Code, obviously, by me [Starwort#6129] with a few snippets taken from discord.py
     async def thanos(self,ctx,target:discord.Member=None):
         '''Did Thanos kill you?'''
         if not target: target = ctx.author
-        await ctx.send(f'Thanos {"killed" if (not bool(target.id % 2)) or (not discord.HypeSquadHouse['balance'] in target.hypesquad_houses) else "spared"}')
+        await ctx.send(f'Thanos {"killed" if ((not bool(target.id % 2)) or (HypeSquadHouse["balance"] not in target.hypesquad_houses)) else "spared"} you')
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))
