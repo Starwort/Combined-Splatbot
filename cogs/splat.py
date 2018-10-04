@@ -136,7 +136,6 @@ class SplatCommands():
         out += '\nDone!\nUpdating `prototypes.txt`...'
         await msg.edit(content=out)
         await self.download("http://starbright.dyndns.org/starwort/prototypes.txt","prototypes.txt")
-        await ctx.send('Done!')
         out += '\nDone!\nResetting the internal list cache...\n`map_list.txt`...'
         await msg.edit(content=out)
         async with aiofiles.open("map_list.txt") as tmp:
